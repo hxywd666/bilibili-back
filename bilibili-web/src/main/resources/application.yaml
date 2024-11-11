@@ -1,0 +1,67 @@
+server:
+  port: 7071
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 15MB
+  application:
+    name: bilibili-web
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/bilibili?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true&useSSL=false
+    username: root
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: HikariCPDatasource
+      minimum-idle: 5
+      idle-timeout: 180000
+      maximum-pool-size: 10
+      auto-commit: true
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    jedis:
+      pool:
+        max-active: 20
+        max-wait: -1
+        max-idle: 10
+        min-idle: 0
+    timeout: 2000
+  mail:
+    host: smtp.126.com
+    username: codingfish0706@126.com
+    password: FXUCf39ZGWYq9rcV
+mybatis-plus:
+  type-aliases-package: com.bilibili.pojo.entity
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+  global-config:
+    db-config:
+      id-type: auto
+      update-strategy: not_null
+project:
+  folder: c:/webser/easylive/
+log:
+  root:
+    level: debug
+email:
+  netease:
+    126:
+      host: smtp.126.com
+      username: codingfish0706@126.com
+      password: FXUCf39ZGWYq9rcV
+    163:
+      host: smtp.163.com
+      username: codingfish0706@163.com
+      password: SGczkzZHgjytfqR9
+  qq:
+    host: smtp.qq.com
+    username: codingfish0706@foxmail.com
+    password: rtmcvapufioleaii

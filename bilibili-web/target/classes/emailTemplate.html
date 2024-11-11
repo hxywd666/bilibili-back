@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>验证码</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .bilibili-icon {
+            margin-right: 10px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .code {
+            font-size: 32px;
+            font-weight: bold;
+            color: #007bff;
+            margin: 20px 0;
+        }
+        .footer {
+            font-size: 14px;
+            color: #999;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <p>尊敬的用户，您好！</p>
+    <p>欢迎您登录/注册bilibili，请使用以下验证码进行验证：</p>
+    <div class="code">${verificationCode}</div>
+    <p>验证码的有效期为5分钟，请勿将此验证码透露给他人</p>
+    <p class="footer">此邮件由系统自动发送，请勿回复。</p>
+    <img src='https://i0.hdslb.com/bfs/article/e94737e816863cbe7f854b3004427d894991c2ac.gif' referrerpolicy='no-referrer'  alt="welcome"/>
+</div>
+</body>
+</html>
