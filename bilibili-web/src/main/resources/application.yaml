@@ -10,7 +10,7 @@ spring:
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/bilibili?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true&useSSL=false
     username: root
-    password: 1234
+    password: 112358
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       pool-name: HikariCPDatasource
@@ -21,6 +21,10 @@ spring:
       max-lifetime: 1800000
       connection-timeout: 30000
       connection-test-query: SELECT 1
+  mail:
+    host: smtp.126.com
+    username: codingfish0706@126.com
+    password: FXUCf39ZGWYq9rcV
   redis:
     database: 0
     host: 127.0.0.1
@@ -47,17 +51,3 @@ project:
 log:
   root:
     level: debug
-email:
-  netease:
-    126:
-      host: smtp.126.com
-      username: codingfish0706@126.com
-      password: FXUCf39ZGWYq9rcV
-    163:
-      host: smtp.163.com
-      username: codingfish0706@163.com
-      password: SGczkzZHgjytfqR9
-  qq:
-    host: smtp.qq.com
-    username: codingfish0706@foxmail.com
-    password: rtmcvapufioleaii

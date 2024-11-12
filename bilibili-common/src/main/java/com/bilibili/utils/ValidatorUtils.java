@@ -15,7 +15,8 @@ public class ValidatorUtils {
         String regex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
+        return matcher.matches() && (email.endsWith("@126.com") || email.endsWith("@163.com") ||
+                email.endsWith("@qq.com") || email.endsWith("@foxmail.com"));
     }
 
     public static boolean isValidPassword(String password) {

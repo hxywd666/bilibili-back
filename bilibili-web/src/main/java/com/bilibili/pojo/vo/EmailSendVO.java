@@ -6,5 +6,4 @@ import lombok.Data;
 @Data
 public class EmailSendVO {
     private String captchaKey;
-    private String captcha;
 }

@@ -1,6 +1,7 @@
 package com.bilibili;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -16,19 +17,16 @@ import java.util.Properties;
 @SpringBootTest
 class BilibiliWebApplicationTests {
 
+    @Autowired
+    private JavaMailSender sender;
+
     private String subject = "邮件标题";
     private String content = "邮件正文";
-    private String to = "codingfish0706@126.com";
-    private String from = to;
+    private String to = "linghuadegou8@gmail.com";
+    private String from = "codingfish0706@126.com";
 
     @Test
     void contextLoads() throws MessagingException, IOException {
-        // 动态设置邮件发送的host、username和password
-        String host = "smtp.example.com";
-        String username = "your-email@example.com";
-        String password = "your-password";
-
-        JavaMailSender sender = createMailSender(host, username, password);
 
         String htmlContent = generateHtmlContent("4906");
         MimeMessage mail = sender.createMimeMessage();
