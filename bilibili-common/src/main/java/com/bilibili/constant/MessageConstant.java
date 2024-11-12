@@ -5,6 +5,7 @@ public class MessageConstant {
     public static final String SYSTEM_ERROR = "服务端异常";
     public static final String PARAM_ERROR = "参数错误";
     public static final String EMAIL_FORMAT_ERROR = "邮箱格式错误";
+    public static final String EMAIL_SENDING_ERROR = "发送邮件失败";
     public static final String PASSWORD_FORMAT_ERROR = "密码格式错误";
     public static final String NICKNAME_FORMAT_ERROR = "昵称格式错误";
     public static final String CAPTCHA_ERROR = "验证码错误";

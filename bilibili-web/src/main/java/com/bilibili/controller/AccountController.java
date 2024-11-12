@@ -33,13 +33,13 @@ public class AccountController {
 
     //注册接口
     @PostMapping("/register")
-    public Result<Boolean> register(RegisterDTO registerDTO) {
+    public Result<Boolean> register(@RequestBody RegisterDTO registerDTO) {
         return accountService.register(registerDTO);
     }
 
     //登录接口
     @PostMapping("/login")
-    public Result<LoginVO> login(HttpServletRequest request, HttpServletResponse response, LoginDTO loginDTO) {
+    public Result<LoginVO> login(HttpServletRequest request, HttpServletResponse response, @RequestBody LoginDTO loginDTO) {
         return accountService.login(request, response,loginDTO);
     }
 

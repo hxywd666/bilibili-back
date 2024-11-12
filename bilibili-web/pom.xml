@@ -40,11 +40,6 @@
             <groupId>org.openjdk.nashorn</groupId>
             <artifactId>nashorn-core</artifactId>
         </dependency>
-        <!--邮件发送依赖-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-mail</artifactId>
-        </dependency>
         <!--单元测试依赖-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

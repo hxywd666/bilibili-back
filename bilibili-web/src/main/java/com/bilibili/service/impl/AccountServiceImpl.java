@@ -19,6 +19,7 @@ import com.bilibili.pojo.vo.CheckCodeVO;
 import com.bilibili.pojo.vo.LoginVO;
 import com.bilibili.result.Result;
 import com.bilibili.service.AccountService;
+import com.bilibili.utils.GetIpUtils;
 import com.bilibili.utils.ValidatorUtils;
 import com.wf.captcha.ArithmeticCaptcha;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +40,9 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, User> impleme
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
+
+    @Autowired
+    private GetIpUtils getIpUtils;
 
     @Override
     public Result<CheckCodeVO> getCheckCode() {
@@ -142,7 +146,7 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, User> impleme
         //更新用户登录信息
         User userInfo = User.builder()
                 .lastLoginTime(new Date())
-                .lastLoginIp(getIpAddress(request))
+                .lastLoginIp(getIpUtils.getIpAddress(request))
                 .id(user.getId())
                 .build();
         updateById(userInfo);
@@ -225,33 +229,5 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, User> impleme
         }
     }
 
-    //获取IP地址方法
-    private String getIpAddress(HttpServletRequest request) {
-        String ip = request.getHeader("x-forwarded-for");
-        if (ip!= null && !ip.isEmpty() &&!"unknown".equalsIgnoreCase(ip)) {
-            //多次反向代理后会有多个 IP 值，第一个 IP 才是真实 IP
-            if (ip.contains(",")) {
-                ip = ip.split(",")[0];
-            }
-        }
-        if (ip == null || !ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("Proxy-Client-IP");
-        }
-        if (ip == null || !ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || !ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_CLIENT_IP");
-        }
-        if (ip == null || !ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-        }
-        if (ip == null || !ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("X-Real-IP");
-        }
-        if (ip == null || !ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getRemoteAddr();
-        }
-        return ip;
-    }
+
 }

@@ -6,8 +6,12 @@ import com.bilibili.pojo.vo.EmailLoginVerifyVO;
 import com.bilibili.pojo.vo.EmailSendVO;
 import com.bilibili.result.Result;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 public interface EmailService {
     Result<EmailSendVO> emailSend(EmailSendDTO emailSendDTO);
 
-    Result<EmailLoginVerifyVO> emailVerifyLogin(EmailLoginVerifyDTO emailLoginVerifyDTO);
+    Result<EmailLoginVerifyVO> emailVerifyLogin(HttpServletRequest request, HttpServletResponse response,
+                                                EmailLoginVerifyDTO emailLoginVerifyDTO);
 }
