@@ -1,7 +1,9 @@
 package com.bilibili.controller;
 
 import com.bilibili.pojo.dto.EmailLoginVerifyDTO;
+import com.bilibili.pojo.dto.EmailSendDTO;
 import com.bilibili.pojo.vo.EmailLoginVerifyVO;
+import com.bilibili.pojo.vo.EmailSendVO;
 import com.bilibili.result.Result;
 import com.bilibili.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +19,16 @@ public class EmailController {
     @Autowired
     private EmailService emailService;
 
-    @PostMapping("/login")
-    public Result<EmailLoginVerifyVO> emailLoginVerify(@RequestBody EmailLoginVerifyDTO emailLoginVerifyDTO) {
-        return emailService.emailLoginVerify(emailLoginVerifyDTO);
+    //发送邮箱验证码接口
+    @PostMapping("/send")
+    public Result<EmailSendVO> emailSend(@RequestBody EmailSendDTO emailSendDTO) {
+        return emailService.emailSend(emailSendDTO);
     }
 
+    //邮箱验证登录接口
+    @PostMapping("/login")
+    public Result<EmailLoginVerifyVO> emailVerifyLogin(@RequestBody EmailLoginVerifyDTO emailLoginVerifyDTO) {
+        return emailService.emailVerifyLogin(emailLoginVerifyDTO);
+    }
 
 }

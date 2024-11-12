@@ -32,10 +32,6 @@ spring:
         max-idle: 10
         min-idle: 0
     timeout: 2000
-  mail:
-    host: smtp.126.com
-    username: codingfish0706@126.com
-    password: FXUCf39ZGWYq9rcV
 mybatis-plus:
   type-aliases-package: com.bilibili.pojo.entity
   mapper-locations: classpath:mapper/*.xml

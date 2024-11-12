@@ -34,6 +34,7 @@ public class AppInterceptor implements HandlerInterceptor {
             return true;
         }
         String token = request.getHeader(AccountConstant.ADMIN_COOKIE_KEY);
+        //如果是file类型的请求 token在Cookie里而不是请求头中 这里需要额外判断
         if (request.getRequestURI().contains(UriConstant.URL_FILE)) {
             Cookie[] cookies = request.getCookies();
             if (cookies != null) {
@@ -44,7 +45,6 @@ public class AppInterceptor implements HandlerInterceptor {
                     }
                 }
             }
-            token = null;
         }
         if (!StringUtils.hasText(token)) {
             throw new LoginErrorException(MessageConstant.LOGIN_TIMED_OUT);
