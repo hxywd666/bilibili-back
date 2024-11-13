@@ -11,7 +11,4 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface EmailService {
     Result<EmailSendVO> emailSend(EmailSendDTO emailSendDTO);
-
-    Result<EmailLoginVerifyVO> emailVerifyLogin(HttpServletRequest request, HttpServletResponse response,
-                                                EmailLoginVerifyDTO emailLoginVerifyDTO);
 }

@@ -3,6 +3,7 @@ package com.bilibili.service.impl;
 import cn.hutool.core.lang.UUID;
 import com.bilibili.constant.AccountConstant;
 import com.bilibili.constant.MessageConstant;
+import com.bilibili.constant.RedisConstant;
 import com.bilibili.exception.LoginErrorException;
 import com.bilibili.exception.ParamErrorException;
 import com.bilibili.pojo.dto.LoginDTO;
@@ -37,10 +38,10 @@ public class AccountServiceImpl implements AccountService {
         ArithmeticCaptcha captcha = new ArithmeticCaptcha(AccountConstant.CAPTCHA_WIDTH, AccountConstant.CAPTCHA_HEIGHT);
         String captchaCode = captcha.text();
         String captchaImage = captcha.toBase64();
-        String redisKey = AccountConstant.ADMIN_KEY_PREFIX
-                + AccountConstant.CAPTCHA_REDIS_KEY
+        String redisKey = RedisConstant.ADMIN_KEY_PREFIX
+                + RedisConstant.CAPTCHA_REDIS_KEY
                 + UUID.randomUUID(true);
-        redisTemplate.opsForValue().set(redisKey, captchaCode, AccountConstant.CAPTCHA_EXPIRE, TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue().set(redisKey, captchaCode, RedisConstant.PIC_CAPTCHA_EXPIRE, TimeUnit.MILLISECONDS);
         CheckCodeVO checkCodeVO = CheckCodeVO.builder()
                 .checkCode(captchaImage)
                 .checkCodeKey(redisKey)
@@ -74,9 +75,9 @@ public class AccountServiceImpl implements AccountService {
         //生成token 存入Redis、Cookie
         String token = UUID.randomUUID(true).toString();
         redisTemplate.opsForValue().set(
-                AccountConstant.ADMIN_KEY_PREFIX + AccountConstant.LOGIN_REDIS_KEY + token,
+                RedisConstant.ADMIN_KEY_PREFIX + RedisConstant.LOGIN_REDIS_KEY + token,
                 loginDTO.getAccount(),
-                AccountConstant.TOKEN_EXPIRE,
+                RedisConstant.LOGIN_TOKEN_EXPIRE,
                 TimeUnit.MILLISECONDS
         );
 
@@ -85,7 +86,7 @@ public class AccountServiceImpl implements AccountService {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(AccountConstant.ADMIN_COOKIE_KEY) && StringUtils.hasText(cookie.getValue())) {
-                    redisTemplate.delete(AccountConstant.ADMIN_KEY_PREFIX + AccountConstant.LOGIN_REDIS_KEY + cookie.getValue());
+                    redisTemplate.delete(RedisConstant.ADMIN_KEY_PREFIX + RedisConstant.LOGIN_REDIS_KEY + cookie.getValue());
                     break;
                 }
             }
@@ -93,7 +94,7 @@ public class AccountServiceImpl implements AccountService {
 
         //将新token存入Cookie返回
         Cookie cookie = new Cookie(AccountConstant.ADMIN_COOKIE_KEY, token);
-        cookie.setMaxAge(AccountConstant.TOKEN_EXPIRE / 1000);
+        cookie.setMaxAge(AccountConstant.COOKIE_LOGIN_TOKEN_EXPIRE / 1000);
         cookie.setPath("/");
         response.addCookie(cookie);
 
@@ -105,7 +106,7 @@ public class AccountServiceImpl implements AccountService {
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals(AccountConstant.ADMIN_COOKIE_KEY) && StringUtils.hasText(cookie.getValue())) {
-                redisTemplate.delete(AccountConstant.ADMIN_KEY_PREFIX + AccountConstant.LOGIN_REDIS_KEY + cookie.getValue());
+                redisTemplate.delete(RedisConstant.ADMIN_KEY_PREFIX + RedisConstant.LOGIN_REDIS_KEY + cookie.getValue());
                 cookie.setMaxAge(0);
                 cookie.setPath("/");
                 response.addCookie(cookie);

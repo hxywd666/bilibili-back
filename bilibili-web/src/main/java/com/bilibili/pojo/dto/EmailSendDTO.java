@@ -6,4 +6,6 @@ import lombok.Data;
 @Data
 public class EmailSendDTO {
     private String email;
+    private String checkCode;
+    private String checkCodeKey;
 }

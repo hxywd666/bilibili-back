@@ -1,8 +1,10 @@
 package com.bilibili.controller;
 
+import com.bilibili.pojo.dto.EmailLoginVerifyDTO;
 import com.bilibili.pojo.dto.LoginDTO;
 import com.bilibili.pojo.dto.RegisterDTO;
 import com.bilibili.pojo.vo.CheckCodeVO;
+import com.bilibili.pojo.vo.EmailLoginVerifyVO;
 import com.bilibili.pojo.vo.LoginVO;
 import com.bilibili.result.Result;
 import com.bilibili.service.AccountService;
@@ -26,7 +28,7 @@ public class AccountController {
     private AccountService accountService;
 
     //验证码接口
-    @PostMapping("/checkCode")
+    @GetMapping("/checkCode")
     public Result<CheckCodeVO> getCheckCode() {
         return accountService.getCheckCode();
     }
@@ -37,10 +39,17 @@ public class AccountController {
         return accountService.register(registerDTO);
     }
 
-    //登录接口
-    @PostMapping("/login")
+    //密码登录接口
+    @PostMapping("/password/login")
     public Result<LoginVO> login(HttpServletRequest request, HttpServletResponse response, @RequestBody LoginDTO loginDTO) {
         return accountService.login(request, response,loginDTO);
+    }
+
+    //邮箱验证登录接口
+    @PostMapping("/email/login")
+    public Result<EmailLoginVerifyVO> emailVerifyLogin(HttpServletRequest request, HttpServletResponse response,
+                                                       @RequestBody EmailLoginVerifyDTO emailLoginVerifyDTO) {
+        return accountService.emailVerifyLogin(request, response, emailLoginVerifyDTO);
     }
 
     //自动登录接口
