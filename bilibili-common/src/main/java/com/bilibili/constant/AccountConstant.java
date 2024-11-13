@@ -16,4 +16,5 @@ public class AccountConstant {
     public static final String LOGIN_REDIS_KEY = "login:"; //登录redis key
     public static final String CLIENT_COOKIE_KEY = "token"; //Web端cookie key
     public static final String ADMIN_COOKIE_KEY = "adminToken"; //管理端的cookie key
+    public static final String NICKNAME_DEFAULT_PREFIX = "bili_"; //默认用户昵称的前缀
 }

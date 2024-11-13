@@ -23,16 +23,8 @@ public class EmailController {
     private EmailService emailService;
 
     //发送邮箱验证码接口
-    @PostMapping("/send")
+    @PostMapping("/captcha")
     public Result<EmailSendVO> emailSend(@RequestBody EmailSendDTO emailSendDTO) {
         return emailService.emailSend(emailSendDTO);
     }
-
-    //邮箱验证登录接口
-    @PostMapping("/login")
-    public Result<EmailLoginVerifyVO> emailVerifyLogin(HttpServletRequest request, HttpServletResponse response,
-                                                       @RequestBody EmailLoginVerifyDTO emailLoginVerifyDTO) {
-        return emailService.emailVerifyLogin(request, response, emailLoginVerifyDTO);
-    }
-
 }

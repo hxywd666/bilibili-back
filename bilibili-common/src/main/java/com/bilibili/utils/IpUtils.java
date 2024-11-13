@@ -5,9 +5,9 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 
 @Component
-public class GetIpUtils {
+public class IpUtils {
     //获取IP地址方法
-    public String getIpAddress(HttpServletRequest request) {
+    public static String getIpAddress(HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");
         if (ip!= null && !ip.isEmpty() &&!"unknown".equalsIgnoreCase(ip)) {
             //多次反向代理后会有多个 IP 值，第一个 IP 才是真实 IP
