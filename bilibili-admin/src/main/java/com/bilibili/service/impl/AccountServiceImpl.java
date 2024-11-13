@@ -61,11 +61,10 @@ public class AccountServiceImpl implements AccountService {
 
         //检查验证码并删除
         String captcha = (String) redisTemplate.opsForValue().get(loginDTO.getCheckCodeKey());
+        redisTemplate.delete(loginDTO.getCheckCodeKey());
         if (captcha == null || !captcha.equalsIgnoreCase(loginDTO.getCheckCode())) {
-            redisTemplate.delete(loginDTO.getCheckCodeKey());
             throw new LoginErrorException(MessageConstant.CAPTCHA_ERROR);
         }
-        redisTemplate.delete(loginDTO.getCheckCodeKey());
 
         //检查邮箱、密码(前端已经加密过了)、账户状态
         if ( !loginDTO.getAccount().equals(adminProperties.getAccount()) || !loginDTO.getPassword().equals(adminProperties.getPassword())) {
@@ -94,7 +93,7 @@ public class AccountServiceImpl implements AccountService {
 
         //将新token存入Cookie返回
         Cookie cookie = new Cookie(AccountConstant.ADMIN_COOKIE_KEY, token);
-        cookie.setMaxAge(AccountConstant.COOKIE_LOGIN_TOKEN_EXPIRE / 1000);
+        cookie.setMaxAge(-1); //让Cookie仅存在当前会话
         cookie.setPath("/");
         response.addCookie(cookie);
 
