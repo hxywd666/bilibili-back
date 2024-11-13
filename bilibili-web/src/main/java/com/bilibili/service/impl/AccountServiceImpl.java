@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bilibili.constant.AccountConstant;
 import com.bilibili.constant.MessageConstant;
+import com.bilibili.constant.RedisConstant;
 import com.bilibili.enumeration.AccountGenderEnum;
 import com.bilibili.enumeration.AccountStatusEnum;
 import com.bilibili.exception.LoginErrorException;
@@ -52,10 +53,10 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, User> impleme
         ArithmeticCaptcha captcha = new ArithmeticCaptcha(AccountConstant.CAPTCHA_WIDTH, AccountConstant.CAPTCHA_HEIGHT);
         String captchaCode = captcha.text();
         String captchaImage = captcha.toBase64();
-        String redisKey = AccountConstant.CLIENT_KEY_PREFIX
-                + AccountConstant.CAPTCHA_REDIS_KEY
+        String redisKey = RedisConstant.CLIENT_KEY_PREFIX
+                + RedisConstant.CAPTCHA_REDIS_KEY
                 + UUID.randomUUID(true);
-        redisTemplate.opsForValue().set(redisKey, captchaCode, AccountConstant.CAPTCHA_EXPIRE, TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue().set(redisKey, captchaCode, RedisConstant.PIC_CAPTCHA_EXPIRE, TimeUnit.MILLISECONDS);
         CheckCodeVO checkCodeVO = CheckCodeVO.builder()
                 .checkCode(captchaImage)
                 .checkCodeKey(redisKey)
@@ -160,12 +161,12 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, User> impleme
                 .nickName(user.getNickName())
                 .avatar(user.getAvatar())
                 .token(token)
-                .expireAt(System.currentTimeMillis() + AccountConstant.TOKEN_EXPIRE)
+                .expireAt(System.currentTimeMillis() + RedisConstant.LOGIN_TOKEN_EXPIRE)
                 .build();
         redisTemplate.opsForValue().set(
-                AccountConstant.CLIENT_KEY_PREFIX + AccountConstant.LOGIN_REDIS_KEY + token,
+                RedisConstant.CLIENT_KEY_PREFIX + RedisConstant.LOGIN_REDIS_KEY + token,
                 loginVO,
-                AccountConstant.TOKEN_EXPIRE,
+                RedisConstant.LOGIN_TOKEN_EXPIRE,
                 TimeUnit.MILLISECONDS
         );
 
@@ -174,7 +175,7 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, User> impleme
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(AccountConstant.CLIENT_COOKIE_KEY) && StringUtils.hasText(cookie.getValue())) {
-                    redisTemplate.delete(AccountConstant.CLIENT_KEY_PREFIX + AccountConstant.LOGIN_REDIS_KEY + cookie.getValue());
+                    redisTemplate.delete(RedisConstant.CLIENT_KEY_PREFIX + RedisConstant.LOGIN_REDIS_KEY + cookie.getValue());
                     break;
                 }
             }
@@ -182,7 +183,7 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, User> impleme
 
         //将新token存入Cookie返回
         Cookie cookie = new Cookie(AccountConstant.CLIENT_COOKIE_KEY, token);
-        cookie.setMaxAge(AccountConstant.TOKEN_EXPIRE / 1000);
+        cookie.setMaxAge(AccountConstant.COOKIE_LOGIN_TOKEN_EXPIRE / 1000);
         cookie.setPath("/");
         response.addCookie(cookie);
 
@@ -193,23 +194,23 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, User> impleme
     public Result<LoginVO> autoLogin(HttpServletRequest request, HttpServletResponse response) {
         //去Redis检查登录是否过期
         String token = request.getHeader(AccountConstant.CLIENT_COOKIE_KEY);
-        LoginVO loginVO = (LoginVO) redisTemplate.opsForValue().get(AccountConstant.CLIENT_KEY_PREFIX + AccountConstant.LOGIN_REDIS_KEY + token);
+        LoginVO loginVO = (LoginVO) redisTemplate.opsForValue().get(RedisConstant.CLIENT_KEY_PREFIX + RedisConstant.LOGIN_REDIS_KEY + token);
         if (loginVO == null) {
             return Result.success(null);
         }
 
         //如果距过期时间小于一天 续期并将新token存入Cookie返回
-        if (loginVO.getExpireAt() - System.currentTimeMillis() < AccountConstant.ONE_DAY_MILLISECOND) {
+        if (loginVO.getExpireAt() - System.currentTimeMillis() < RedisConstant.ONE_DAY_MILLISECOND) {
             String newToken = UUID.randomUUID(true).toString();
             redisTemplate.opsForValue().set(
-                    AccountConstant.CLIENT_KEY_PREFIX + AccountConstant.LOGIN_REDIS_KEY + newToken,
+                    RedisConstant.CLIENT_KEY_PREFIX + RedisConstant.LOGIN_REDIS_KEY + newToken,
                     loginVO,
-                    AccountConstant.TOKEN_EXPIRE,
+                    RedisConstant.LOGIN_TOKEN_EXPIRE,
                     TimeUnit.MILLISECONDS
             );
-            redisTemplate.delete(AccountConstant.CLIENT_KEY_PREFIX + AccountConstant.LOGIN_REDIS_KEY + token);
+            redisTemplate.delete(RedisConstant.CLIENT_KEY_PREFIX + RedisConstant.LOGIN_REDIS_KEY + token);
             Cookie cookie = new Cookie(AccountConstant.CLIENT_COOKIE_KEY, token);
-            cookie.setMaxAge(AccountConstant.TOKEN_EXPIRE / 1000);
+            cookie.setMaxAge(AccountConstant.COOKIE_LOGIN_TOKEN_EXPIRE / 1000);
             cookie.setPath("/");
             response.addCookie(cookie);
         }
@@ -222,7 +223,7 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, User> impleme
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals(AccountConstant.CLIENT_COOKIE_KEY) && StringUtils.hasText(cookie.getValue())) {
-                redisTemplate.delete(AccountConstant.CLIENT_KEY_PREFIX + AccountConstant.LOGIN_REDIS_KEY + cookie.getValue());
+                redisTemplate.delete(RedisConstant.CLIENT_KEY_PREFIX + RedisConstant.LOGIN_REDIS_KEY + cookie.getValue());
                 cookie.setMaxAge(0);
                 cookie.setPath("/");
                 response.addCookie(cookie);
@@ -281,12 +282,12 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, User> impleme
                 .nickName(user.getNickName())
                 .avatar(user.getAvatar())
                 .token(token)
-                .expireAt(System.currentTimeMillis() + AccountConstant.TOKEN_EXPIRE)
+                .expireAt(System.currentTimeMillis() + RedisConstant.LOGIN_TOKEN_EXPIRE)
                 .build();
         redisTemplate.opsForValue().set(
-                AccountConstant.CLIENT_KEY_PREFIX + AccountConstant.LOGIN_REDIS_KEY + token,
+                RedisConstant.CLIENT_KEY_PREFIX + RedisConstant.LOGIN_REDIS_KEY + token,
                 emailLoginVerifyVO,
-                AccountConstant.TOKEN_EXPIRE,
+                RedisConstant.LOGIN_TOKEN_EXPIRE,
                 TimeUnit.MILLISECONDS
         );
 
@@ -295,7 +296,7 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, User> impleme
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(AccountConstant.CLIENT_COOKIE_KEY) && StringUtils.hasText(cookie.getValue())) {
-                    redisTemplate.delete(AccountConstant.CLIENT_KEY_PREFIX + AccountConstant.LOGIN_REDIS_KEY + cookie.getValue());
+                    redisTemplate.delete(RedisConstant.CLIENT_KEY_PREFIX + RedisConstant.LOGIN_REDIS_KEY + cookie.getValue());
                     break;
                 }
             }
@@ -303,7 +304,7 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, User> impleme
 
         //将新token存入Cookie返回
         Cookie cookie = new Cookie(AccountConstant.CLIENT_COOKIE_KEY, token);
-        cookie.setMaxAge(AccountConstant.TOKEN_EXPIRE / 1000);
+        cookie.setMaxAge(AccountConstant.COOKIE_LOGIN_TOKEN_EXPIRE / 1000);
         cookie.setPath("/");
         response.addCookie(cookie);
 
