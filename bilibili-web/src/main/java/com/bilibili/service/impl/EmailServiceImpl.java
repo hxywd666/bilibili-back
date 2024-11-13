@@ -66,7 +66,7 @@ public class EmailServiceImpl implements EmailService {
         return Result.success(vo);
     }
 
-    @Async
+
     public void sendEmailAsync(String email, String verificationCode) {
         try {
             emailUtils.sendingEmail(email, EmailConstant.EMAIL_LOGIN_TITLE, verificationCode);

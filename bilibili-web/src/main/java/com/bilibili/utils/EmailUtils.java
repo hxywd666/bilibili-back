@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
@@ -22,6 +23,7 @@ public class EmailUtils {
     private MailProperties mailProperties;
 
     // 发送邮件
+    @Async
     public void sendingEmail(String to, String subject, String verificationCode) throws MessagingException, IOException {
         String htmlContent = generateHtmlContent(verificationCode);
         MimeMessage mail = sender.createMimeMessage();
