@@ -2,7 +2,6 @@ package com.bilibili.service;
 
 import com.bilibili.pojo.dto.EmailLoginVerifyDTO;
 import com.bilibili.pojo.dto.LoginDTO;
-import com.bilibili.pojo.dto.RegisterDTO;
 import com.bilibili.pojo.vo.CheckCodeVO;
 import com.bilibili.pojo.vo.EmailLoginVerifyVO;
 import com.bilibili.pojo.vo.LoginVO;

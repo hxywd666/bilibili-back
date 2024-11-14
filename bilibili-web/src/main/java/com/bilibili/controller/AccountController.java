@@ -2,22 +2,18 @@ package com.bilibili.controller;
 
 import com.bilibili.pojo.dto.EmailLoginVerifyDTO;
 import com.bilibili.pojo.dto.LoginDTO;
-import com.bilibili.pojo.dto.RegisterDTO;
 import com.bilibili.pojo.vo.CheckCodeVO;
 import com.bilibili.pojo.vo.EmailLoginVerifyVO;
 import com.bilibili.pojo.vo.LoginVO;
 import com.bilibili.result.Result;
 import com.bilibili.service.AccountService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.Arrays;
 
 /*账户相关接口*/
 @RestController
