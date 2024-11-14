@@ -15,8 +15,13 @@ public class RedisConstant {
     /*email业务Redis Key*/
     public static final String EMAIL_REDIS_KEY = "email:"; //邮箱验证码redis key
 
+    /*file业务Redis Key*/
+    public static final String FILE_REDIS_KEY = "file:"; //文件业务统一Redis Key
+    public static final String UPLOAD_FILE_REDIS_KEY = "upload:"; //文件上传Redis Key
+
     /*有效期*/
     public static final int LOGIN_TOKEN_EXPIRE = ONE_DAY_MILLISECOND * 3; //token有效期(3天)
     public static final int PIC_CAPTCHA_EXPIRE = ONE_MIN_MILLISECOND; //图形验证码有效期(1min)
     public static final int EMAIL_CAPTCHA_EXPIRE = ONE_MIN_MILLISECOND * 5; //邮箱验证码有效期(5min)
+    public static final int UPLOAD_FILE_EXPIRE = ONE_DAY_MILLISECOND; //上传文件有效期(1天)
 }
