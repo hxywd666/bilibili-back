@@ -2,8 +2,10 @@ package com.bilibili.pojo.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.io.Serializable;
@@ -11,6 +13,8 @@ import java.io.Serializable;
 // 用户个人信息实体类
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     //用户ID
     @TableId(type = IdType.ASSIGN_ID)

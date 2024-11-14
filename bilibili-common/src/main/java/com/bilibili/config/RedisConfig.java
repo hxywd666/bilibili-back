@@ -1,7 +1,6 @@
 package com.bilibili.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +11,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 /*Redis连接配置*/
 @Configuration
-@Slf4j
 public class RedisConfig {
     @Autowired
     private RedisConnectionFactory redisConnectionFactory;

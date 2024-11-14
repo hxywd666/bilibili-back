@@ -38,12 +38,6 @@ public class EmailServiceImpl implements EmailService {
     public Result<EmailSendVO> emailSend(EmailSendDTO emailSendDTO) {
         // 校验参数
         String email = emailSendDTO.getEmail();
-        if (!StringUtils.hasText(emailSendDTO.getCheckCode()) || !StringUtils.hasText(emailSendDTO.getCheckCodeKey())) {
-            throw new ParamErrorException(MessageConstant.PARAM_ERROR);
-        }
-        if (!ValidatorUtils.isValidEmail(email)) {
-            throw new EmailErrorException(MessageConstant.EMAIL_FORMAT_ERROR);
-        }
         // 校验验证码
         if (!emailSendDTO.getCheckCode().equals(redisTemplate.opsForValue().get(emailSendDTO.getCheckCodeKey()))) {
             redisTemplate.delete(emailSendDTO.getCheckCodeKey());

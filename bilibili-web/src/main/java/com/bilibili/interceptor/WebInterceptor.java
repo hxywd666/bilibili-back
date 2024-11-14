@@ -1,8 +1,11 @@
 package com.bilibili.interceptor;
 
 import com.bilibili.constant.AccountConstant;
+import com.bilibili.constant.RedisConstant;
 import com.bilibili.context.UserContext;
 import com.bilibili.pojo.entity.User;
+import com.bilibili.pojo.vo.LoginVO;
+import com.bilibili.utils.ConvertUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -34,9 +37,14 @@ public class WebInterceptor implements HandlerInterceptor {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(AccountConstant.CLIENT_COOKIE_KEY) && StringUtils.hasText(cookie.getValue())) {
                     String token = cookie.getValue();
-                    User user = (User) redisTemplate.opsForValue().get(token);
-                    if (user != null) {
-                        UserContext.setUserId(user.getId());
+                    Object object = redisTemplate.opsForValue().get(
+                            RedisConstant.CLIENT_KEY_PREFIX
+                            + RedisConstant.LOGIN_REDIS_KEY
+                            + token
+                    );
+                    LoginVO loginVO = ConvertUtils.convertObject(object, LoginVO.class);
+                    if (loginVO != null) {
+                        UserContext.setUserId(Long.parseLong(loginVO.getUserId()));
                     }
                     break;
                 }

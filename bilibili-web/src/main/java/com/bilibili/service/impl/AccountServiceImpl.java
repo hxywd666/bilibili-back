@@ -13,18 +13,16 @@ import com.bilibili.constant.RedisConstant;
 import com.bilibili.enumeration.AccountGenderEnum;
 import com.bilibili.enumeration.AccountStatusEnum;
 import com.bilibili.exception.LoginErrorException;
-import com.bilibili.exception.RegisterErrorException;
-import com.bilibili.exception.ParamErrorException;
 import com.bilibili.mapper.AccountMapper;
 import com.bilibili.pojo.dto.EmailLoginVerifyDTO;
 import com.bilibili.pojo.dto.LoginDTO;
-import com.bilibili.pojo.dto.RegisterDTO;
 import com.bilibili.pojo.entity.User;
 import com.bilibili.pojo.vo.CheckCodeVO;
 import com.bilibili.pojo.vo.EmailLoginVerifyVO;
 import com.bilibili.pojo.vo.LoginVO;
 import com.bilibili.result.Result;
 import com.bilibili.service.AccountService;
+import com.bilibili.utils.ConvertUtils;
 import com.bilibili.utils.IpUtils;
 import com.bilibili.utils.ValidatorUtils;
 import com.wf.captcha.ArithmeticCaptcha;
@@ -65,68 +63,7 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, User> impleme
     }
 
     @Override
-    public Result<Boolean> register(RegisterDTO registerDTO) {
-        //校验参数
-        if (!StringUtils.hasText(registerDTO.getCheckCode()) || !StringUtils.hasText(registerDTO.getCheckCodeKey())) {
-            throw new ParamErrorException(MessageConstant.PARAM_ERROR);
-        }
-        if (!StringUtils.hasText(registerDTO.getNickName()) || registerDTO.getNickName().length() > 20) {
-            throw new RegisterErrorException(MessageConstant.NICKNAME_FORMAT_ERROR);
-        }
-        if (!ValidatorUtils.isValidEmail(registerDTO.getEmail())) {
-            throw new RegisterErrorException(MessageConstant.EMAIL_FORMAT_ERROR);
-        }
-        if (!ValidatorUtils.isValidPassword(registerDTO.getRegisterPassword())) {
-            throw new RegisterErrorException(MessageConstant.PASSWORD_FORMAT_ERROR);
-        }
-
-        //检查验证码并删除
-        String captcha = (String) redisTemplate.opsForValue().get(registerDTO.getCheckCodeKey());
-        if (captcha == null || !captcha.equalsIgnoreCase(registerDTO.getCheckCode())) {
-            redisTemplate.delete(registerDTO.getCheckCodeKey());
-            throw new RegisterErrorException(MessageConstant.CAPTCHA_ERROR);
-        }
-        redisTemplate.delete(registerDTO.getCheckCodeKey());
-
-        //检查邮箱和昵称是否已存在
-        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(User::getEmail, registerDTO.getEmail());
-        if (count(queryWrapper) > 0) {
-            throw new RegisterErrorException(MessageConstant.EMAIL_EXISTED);
-        }
-        queryWrapper.clear();
-        queryWrapper.eq(User::getNickName, registerDTO.getNickName());
-        if (count(queryWrapper) > 0) {
-            throw new RegisterErrorException(MessageConstant.NICKNAME_EXISTED);
-        }
-
-        //保存用户
-        User user = User.builder()
-                .email(registerDTO.getEmail())
-                .nickName(registerDTO.getNickName())
-                .password(MD5.create().digestHex(registerDTO.getRegisterPassword()))
-                .sex(AccountGenderEnum.UNKNOWN.getCode())
-                .registerTime(new Date())
-                .status(AccountStatusEnum.NORMAL.getCode())
-                .totalCoinCount(AccountConstant.DEFAULT_COIN_COUNT)
-                .currentCoinCount(AccountConstant.DEFAULT_COIN_COUNT)
-                .theme(AccountConstant.DEFAULT_THEME)
-                .build();
-        save(user);
-
-        return Result.success(true);
-    }
-
-    @Override
     public Result<LoginVO> login(HttpServletRequest request, HttpServletResponse response, LoginDTO loginDTO) {
-        // 参数校验
-        if (!StringUtils.hasText(loginDTO.getCheckCode()) || !StringUtils.hasText(loginDTO.getCheckCodeKey())) {
-            throw new ParamErrorException(MessageConstant.PARAM_ERROR);
-        }
-        if (!ValidatorUtils.isValidEmail(loginDTO.getEmail())) {
-            throw new LoginErrorException(MessageConstant.EMAIL_FORMAT_ERROR);
-        }
-
         //检查验证码并删除
         String captcha = (String) redisTemplate.opsForValue().get(loginDTO.getCheckCodeKey());
         if (captcha == null || !captcha.equalsIgnoreCase(loginDTO.getCheckCode())) {
@@ -194,7 +131,8 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, User> impleme
     public Result<LoginVO> autoLogin(HttpServletRequest request, HttpServletResponse response) {
         //去Redis检查登录是否过期
         String token = request.getHeader(AccountConstant.CLIENT_COOKIE_KEY);
-        LoginVO loginVO = (LoginVO) redisTemplate.opsForValue().get(RedisConstant.CLIENT_KEY_PREFIX + RedisConstant.LOGIN_REDIS_KEY + token);
+        Object object = redisTemplate.opsForValue().get(RedisConstant.CLIENT_KEY_PREFIX + RedisConstant.LOGIN_REDIS_KEY + token);
+        LoginVO loginVO = ConvertUtils.convertObject(object, LoginVO.class);
         if (loginVO == null) {
             return Result.success(null);
         }
@@ -237,13 +175,6 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, User> impleme
                                                        EmailLoginVerifyDTO emailLoginVerifyDTO) {
         String email = emailLoginVerifyDTO.getEmail();
         String captchaKey = emailLoginVerifyDTO.getCaptchaKey();
-        //参数校验
-        if (!StringUtils.hasText(captchaKey)) {
-            throw new LoginErrorException(MessageConstant.PARAM_ERROR);
-        }
-        if (!ValidatorUtils.isValidEmail(email)) {
-            throw new LoginErrorException(MessageConstant.EMAIL_FORMAT_ERROR);
-        }
         String captcha = (String) redisTemplate.opsForValue()
                 .get(captchaKey);
         redisTemplate.delete(captchaKey);
@@ -310,6 +241,4 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, User> impleme
 
         return Result.success(emailLoginVerifyVO);
     }
-
-
 }

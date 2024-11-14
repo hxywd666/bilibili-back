@@ -1,16 +1,18 @@
 package com.bilibili.pojo.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
 
 @Data
 @Builder
-public class PreUploadVideoRedisDTO implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 8442729330848992831L;
+@NoArgsConstructor
+@AllArgsConstructor
+public class UploadVideoRedisDTO {
     private String uploadId;
     private String fileName;
     private Integer chunkIndex;

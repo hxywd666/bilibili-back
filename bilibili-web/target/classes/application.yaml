@@ -10,7 +10,7 @@ spring:
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/bilibili?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true&useSSL=false
     username: root
-    password: 112358
+    password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       pool-name: HikariCPDatasource
@@ -46,8 +46,8 @@ mybatis-plus:
     db-config:
       id-type: auto
       update-strategy: not_null
-project:
-  folder: c:/webser/easylive/
+file:
+  video: E:/bilibili/video/
 log:
   root:
     level: debug
