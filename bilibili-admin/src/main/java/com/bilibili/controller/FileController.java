@@ -42,7 +42,7 @@ public class FileController {
                 .setObjectId("0")   // 关联对象id，为了方便管理，不需要可以不写
                 .setObjectType("0") // 关联对象类型，为了方便管理，不需要可以不写
                 .thumbnail(true)
-                .putAttr("category", "admin") // 保存一些属性，不需要可以不写
+                //.putAttr("category", "admin") // 保存一些属性，不需要可以不写
                 .upload();  // 将文件上传到对应地方
         if(fileInfo == null){
             throw new FileErrorException("文件上传失败");
