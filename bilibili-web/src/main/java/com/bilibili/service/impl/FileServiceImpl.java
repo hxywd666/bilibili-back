@@ -4,17 +4,19 @@ import cn.hutool.core.util.RandomUtil;
 import com.bilibili.constant.FileConstant;
 import com.bilibili.constant.MessageConstant;
 import com.bilibili.constant.RedisConstant;
-import com.bilibili.constant.SystemConstant;
 import com.bilibili.context.UserContext;
 import com.bilibili.exception.FileErrorException;
+import com.bilibili.pojo.dto.DeleteUploadedVideo;
 import com.bilibili.pojo.dto.PreUploadVideoDTO;
 import com.bilibili.pojo.dto.UploadVideoRedisDTO;
 import com.bilibili.pojo.dto.UploadVideoDTO;
 import com.bilibili.properties.FileProperties;
+import com.bilibili.properties.SysSettingProperties;
 import com.bilibili.result.Result;
 import com.bilibili.service.FileService;
 import com.bilibili.utils.ConvertUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,8 @@ public class FileServiceImpl implements FileService {
     private RedisTemplate<String, Object> redisTemplate;
     @Autowired
     private FileProperties fileProperties;
+    @Autowired
+    private SysSettingProperties sysSettingProperties;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
@@ -40,7 +44,6 @@ public class FileServiceImpl implements FileService {
     public Result<String> preUploadVideo(PreUploadVideoDTO preUploadVideoDTO) {
         //随机生成视频上传ID 创建临时上传目录
         Long userId = UserContext.getUserId();
-        log.error("{}", userId);
         String uploadId = RandomUtil.randomString(FileConstant.UPLOAD_ID_LENGTH);
         String day = sdf.format(new Date());
         String filePath = day + "/" + userId + uploadId;
@@ -84,14 +87,13 @@ public class FileServiceImpl implements FileService {
                 + uploadVideoDTO.getUploadId()
         );
         UploadVideoRedisDTO uploadVideoRedisDTO = ConvertUtils.convertObject(object, UploadVideoRedisDTO.class);
-        log.error("{}", uploadVideoRedisDTO);
         //如果没有预上传信息直接报错
         if (uploadVideoRedisDTO == null) {
             throw new FileErrorException(MessageConstant.FILE_UPLOAD_ERROR);
         }
         Long uploadedFileSize = uploadVideoRedisDTO.getFileSize();
         //校验已经上传的文件大小
-        if (uploadedFileSize > SystemConstant.VIDEO_FILE_MAX_SIZE) {
+        if (uploadedFileSize > sysSettingProperties.getVideoSize()) {
             throw new FileErrorException(MessageConstant.FILE_OVERSIZE);
         }
         //判断分片索引是否正确
@@ -115,5 +117,31 @@ public class FileServiceImpl implements FileService {
                 TimeUnit.MICROSECONDS
         );
         return Result.success();
+    }
+
+    @Override
+    public Result<String> delUploadVideo(DeleteUploadedVideo deleteUploadedVideo) throws IOException {
+        String uploadId = deleteUploadedVideo.getUploadId();
+        //获取预上传文件信息
+        Object object = redisTemplate.opsForValue().get(
+                RedisConstant.CLIENT_KEY_PREFIX
+                        + RedisConstant.FILE_REDIS_KEY
+                        + RedisConstant.UPLOAD_FILE_REDIS_KEY
+                        + UserContext.getUserId() + ":"
+                        + uploadId
+        );
+        UploadVideoRedisDTO uploadVideoRedisDTO = ConvertUtils.convertObject(object, UploadVideoRedisDTO.class);
+        if (uploadVideoRedisDTO == null) {
+            throw new FileErrorException(MessageConstant.FILE_UPLOAD_ERROR);
+        }
+        redisTemplate.delete(
+                RedisConstant.CLIENT_KEY_PREFIX
+                     + RedisConstant.FILE_REDIS_KEY
+                     + RedisConstant.UPLOAD_FILE_REDIS_KEY
+                     + UserContext.getUserId() + ":"
+                     + uploadId
+        );
+        FileUtils.deleteDirectory(new File(fileProperties.getVideo() + FileConstant.TEMP_VIDEO_UPLOAD_FOLDER + uploadVideoRedisDTO.getFilePath()));
+        return Result.success(uploadId);
     }
 }

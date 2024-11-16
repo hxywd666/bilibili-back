@@ -1,11 +1,14 @@
 package com.bilibili.controller;
 
+import com.bilibili.pojo.dto.DeleteUploadedVideo;
 import com.bilibili.pojo.dto.PreUploadVideoDTO;
 import com.bilibili.pojo.dto.UploadVideoDTO;
+import com.bilibili.properties.SysSettingProperties;
 import com.bilibili.result.Result;
 import com.bilibili.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,4 +35,15 @@ public class FileController {
         return fileService.uploadVideo(uploadVideoDTO);
     }
 
+    //删除上传文件
+    @PostMapping("/delUploadVideo")
+    public Result<String> delUploadVideo(@Valid DeleteUploadedVideo deleteUploadedVideo) throws IOException {
+        return fileService.delUploadVideo(deleteUploadedVideo);
+    }
+
+    //读取系统设置
+    @GetMapping("/getSetting")
+    public Result<SysSettingProperties> getSetting() {
+        return Result.success(new SysSettingProperties());
+    }
 }

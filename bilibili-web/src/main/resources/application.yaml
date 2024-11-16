@@ -51,3 +51,12 @@ file:
 log:
   root:
     level: debug
+system:
+  setting:
+    register-coin-count: 10
+    post-video-coin-count: 10
+    video-size: 10485760
+    video-p-count: 10
+    video-count: 10
+    comment-count: 10
+    danmu-count: 20

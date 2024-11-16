@@ -20,6 +20,7 @@ import com.bilibili.pojo.entity.User;
 import com.bilibili.pojo.vo.CheckCodeVO;
 import com.bilibili.pojo.vo.EmailLoginVerifyVO;
 import com.bilibili.pojo.vo.LoginVO;
+import com.bilibili.properties.SysSettingProperties;
 import com.bilibili.result.Result;
 import com.bilibili.service.AccountService;
 import com.bilibili.utils.ConvertUtils;
@@ -44,7 +45,9 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, User> impleme
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
-
+    @Autowired
+    private SysSettingProperties sysSettingProperties;
+    
     @Override
     public Result<CheckCodeVO> getCheckCode() {
         //获取验证码答案和图片 并存入Redis
@@ -192,8 +195,8 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, User> impleme
                     .sex(AccountGenderEnum.UNKNOWN.getCode())
                     .registerTime(new Date())
                     .status(AccountStatusEnum.NORMAL.getCode())
-                    .totalCoinCount(AccountConstant.DEFAULT_COIN_COUNT)
-                    .currentCoinCount(AccountConstant.DEFAULT_COIN_COUNT)
+                    .totalCoinCount(sysSettingProperties.getRegisterCoinCount())
+                    .currentCoinCount(sysSettingProperties.getRegisterCoinCount())
                     .theme(AccountConstant.DEFAULT_THEME)
                     .lastLoginTime(new Date())
                     .lastLoginIp(IpUtils.getIpAddress(request))
