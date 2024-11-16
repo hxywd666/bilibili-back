@@ -47,12 +47,12 @@ public class AdminInterceptor implements HandlerInterceptor {
                 }
             }
         }
-        //if (!StringUtils.hasText(token)) {
-        //    throw new LoginErrorException(MessageConstant.LOGIN_TIMED_OUT);
-        //}
-        //if (redisTemplate.opsForValue().get(RedisConstant.ADMIN_KEY_PREFIX + RedisConstant.LOGIN_REDIS_KEY + token) == null) {
-        //    throw new LoginErrorException(MessageConstant.LOGIN_TIMED_OUT);
-        //}
+        if (!StringUtils.hasText(token)) {
+            throw new LoginErrorException(MessageConstant.LOGIN_TIMED_OUT);
+        }
+        if (redisTemplate.opsForValue().get(RedisConstant.ADMIN_KEY_PREFIX + RedisConstant.LOGIN_REDIS_KEY + token) == null) {
+            throw new LoginErrorException(MessageConstant.LOGIN_TIMED_OUT);
+        }
         return true;
     }
 
