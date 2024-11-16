@@ -35,7 +35,7 @@ public class FileController {
     @PostMapping("/uploadImage")
     public Result uploadImage(@NotNull MultipartFile file,@NotNull Boolean createThumbnail){// 获取当前日期并格式化为 yyyyMM 格式
         String currentMonthPath = categoryProperties.getBasePath() + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMM")) + "/";
-
+        /*
         FileInfo fileInfo = fileStorageService.of(file)
                 .setPlatform("aliyun-oss-1") // 确保平台名称与配置一致
                 .setPath(currentMonthPath) // 动态设置路径为 "category/yyyyMM/"
@@ -47,6 +47,13 @@ public class FileController {
         if(fileInfo == null){
             throw new FileErrorException("文件上传失败");
         }
+        */
+        FileInfo fileInfo = fileStorageService.of(file)
+                .setPath("upload/") //保存到相对路径下，为了方便管理，不需要可以不写
+                .setObjectId("0")   //关联对象id，为了方便管理，不需要可以不写
+                .setObjectType("0") //关联对象类型，为了方便管理，不需要可以不写
+                .putAttr("role","admin") //保存一些属性，可以在切面、保存上传记录、自定义存储平台等地方获取使用，不需要可以不写
+                .upload();  //将文件上传到对应地方
         return Result.success(fileInfo.getUrl());
     }
 

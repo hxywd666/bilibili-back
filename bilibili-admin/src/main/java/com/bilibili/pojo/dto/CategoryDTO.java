@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryDTO {
-    private Integer id;              //主键
+    private Integer categoryId;              //主键
     private String categoryCode; //分类编码
     private String categoryName; //分类名称
     private Integer pCategoryId;     //父级分类ID

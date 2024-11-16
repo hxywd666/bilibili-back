@@ -42,9 +42,15 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         Category getCategory = categoryMapper.selectByCategoryCode(categoryDTO.getCategoryCode());
         //  1. 如果传过来的没有分类id，则表示为新增，根据code查询如果存在表示已经存在
         //  2. 如果传过来了分类id，并且根据名称也能查到，那么必须传过来的id和查到的id相等表示同一个，不然就是已存在
-        if (categoryDTO.getId() == null && getCategory != null  ||
-        categoryDTO.getId() != null && getCategory != null && !categoryDTO.getId().equals(getCategory.getId())) {
-            throw new BaseException("新添加的种类已存在");
+        if (categoryDTO.getCategoryId() == null && getCategory != null){
+            throw new CategoryException("分类已存在");
+        }
+        if (categoryDTO.getCategoryId() != null && getCategory != null && categoryDTO.getCategoryId().equals(getCategory.getId())) {
+            int update = updateCategory(categoryDTO, getCategory);
+            if (update <= 0){
+                throw new CategoryException("更新失败");
+            }
+            return;
         }
         // 转为存储对象
         Category category = new Category();
@@ -56,6 +62,12 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         categoryMapper.insert(category);
         saveToRedis(new CategoryQueryDTO());
     }
+    public int updateCategory(CategoryDTO categoryDTO,Category category){
+        BeanUtils.copyProperties(categoryDTO,category);
+        int update = categoryMapper.updateById(category);
+        return update;
+    }
+
 
     // 根据查询条件，模糊查询并且返回树状结构给前端
     @Override
