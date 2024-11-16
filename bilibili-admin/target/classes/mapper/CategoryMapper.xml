@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bilibili.mapper.CategoryMapper">
+    <update id="updateSortBatch">
+        <foreach collection="list" separator=";" item="item">
+            update category set sort = #{item.sort} where id = #{item.id} and p_category_id = #{item.pCategoryId}
+        </foreach>
+    </update>
+
+    <select id="selectMaxSort" resultType="java.lang.Integer">
+        select ifnull(max(sort),0) from category where p_category_id = #{pCategoryId}
+    </select>
+
+    <select id="selectByCategoryCode" resultType="com.bilibili.pojo.entity.Category">
+        select * from category where category_code = #{categoryCode}
+    </select>
+    <select id="selectCategoryByParam" parameterType="com.bilibili.pojo.dto.CategoryQueryDTO" resultType="com.bilibili.pojo.entity.Category">
+        SELECT *
+        FROM category
+        <where> 1=1
+        <if test="categoryQuery.categoryId != null and categoryQuery.pCategoryId == null ">
+            AND (id = #{categoryQuery.categoryId} or p_category_id = #{categoryQuery.categoryId})
+        </if>
+        <if test="categoryQuery.categoryId != null and categoryQuery.pCategoryId != null">
+            AND id = #{categoryQuery.categoryId} and p_category_id = #{categoryQuery.pCategoryId}
+        </if>
+        <if test="categoryQuery.categoryId == null and categoryQuery.pCategoryId != null">
+            AND (id = #{categoryQuery.pCategoryId} or p_category_id = #{categoryQuery.pCategoryId})
+        </if>
+        <if test="(categoryQuery.categoryCode == null or categoryQuery.categoryCode == '')and categoryQuery.categoryCodeFuzzy != null">
+            AND category_code LIKE CONCAT('%', #{categoryQuery.categoryCodeFuzzy}, '%')
+        </if>
+        <!-- 处理 categoryCode 字段 -->
+        <if test="categoryQuery.categoryCode != null and categoryQuery.categoryCode != ''">
+                AND category_code = #{categoryQuery.categoryCode}
+        </if>
+
+        <!-- 处理 categoryName 字段 -->
+        <if test="categoryQuery.categoryName != null and categoryQuery.categoryName != ''">
+                AND category_name = #{categoryQuery.categoryName}
+        </if>
+        <if test="(categoryQuery.categoryName == null or categoryQuery.categoryName == '' )and categoryQuery.categoryNameFuzzy != null">
+            AND category_name LIKE CONCAT('%', #{categoryQuery.categoryNameFuzzy}, '%')
+        </if>
+
+        <!-- 处理 pCategoryId 字段 -->
+        <if test="categoryQuery.pCategoryId != null and categoryQuery.categoryId != null" >
+            AND p_category_id = #{categoryQuery.pCategoryId}
+        </if>
+
+        <!-- 处理 sort 字段 -->
+        <if test="categoryQuery.sort != null">
+            AND sort = #{categoryQuery.sort}
+        </if>
+
+        <!-- 处理 icon 字段 -->
+        <if test="categoryQuery.icon != null and categoryQuery.icon != ''">
+                AND icon = #{categoryQuery.icon}
+
+        </if>
+        <if test="(categoryQuery.icon == null or categoryQuery.icon == '') and categoryQuery.iconFuzzy != null">
+            AND icon LIKE CONCAT('%', #{categoryQuery.iconFuzzy}, '%')
+        </if>
+
+        <!-- 处理 background 字段 -->
+        <if test="categoryQuery.background != null and categoryQuery.background != ''">
+                AND background = #{categoryQuery.background}
+        </if>
+        <if test="(categoryQuery.background == null or categoryQuery.background == '') and categoryQuery.backgroundFuzzy != null">
+            AND background LIKE CONCAT('%', #{categoryQuery.backgroundFuzzy}, '%')
+        </if>
+        </where>
+    </select>
+
+</mapper>

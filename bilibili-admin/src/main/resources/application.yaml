@@ -3,16 +3,28 @@ server:
   servlet:
     context-path: /admin
 spring:
+  file-storage: #文件存储配置
+    thumbnail-suffix: ".thumbnali.jpg" #缩略图后缀，例如【.min.jpg】【.png】
+    aliyun-oss:
+      - platform: aliyun-oss-1 # 存储平台标识
+        enable-storage: true  # 启用存储
+        access-key: ${ALIYUN_ACCESS_KEY}
+        secret-key: ${ALIYUN_SECRET_KEY}
+        end-point: ${ALIYUN_END_POINT}
+        bucket-name: bilibili-back
+        domain: ${ALIYUN_DOMAIN}
+        base-path: category/ # 基础路径
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 15MB
+      location: C:/Study/temp # 更改为有写入和删除权限的目录
   application:
     name: bilibili-admin
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/bilibili?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true&useSSL=false
     username: root
-    password: 112358
+    password: zbt041205
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       pool-name: HikariCPDatasource
@@ -24,7 +36,7 @@ spring:
       connection-timeout: 30000
       connection-test-query: SELECT 1
   redis:
-    database: 0
+    database: 1
     host: 127.0.0.1
     port: 6379
     jedis:
@@ -45,7 +57,7 @@ mybatis-plus:
       id-type: auto
       update-strategy: not_null
 project:
-  folder: c:/webser/easylive/
+  folder: c:/Study/webser/easylive/
 log:
   root:
     level: debug
