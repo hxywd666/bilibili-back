@@ -9,4 +9,5 @@ import org.springframework.context.annotation.Configuration;
 @Data
 public class FileProperties {
     private String video;
+    private String image;
 }

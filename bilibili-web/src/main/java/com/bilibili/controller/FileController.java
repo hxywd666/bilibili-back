@@ -2,6 +2,7 @@ package com.bilibili.controller;
 
 import com.bilibili.pojo.dto.DeleteUploadedVideo;
 import com.bilibili.pojo.dto.PreUploadVideoDTO;
+import com.bilibili.pojo.dto.UploadImageDTO;
 import com.bilibili.pojo.dto.UploadVideoDTO;
 import com.bilibili.properties.SysSettingProperties;
 import com.bilibili.result.Result;
@@ -45,5 +46,11 @@ public class FileController {
     @GetMapping("/getSetting")
     public Result<SysSettingProperties> getSetting() {
         return Result.success(new SysSettingProperties());
+    }
+
+    //上传图片接口
+    @PostMapping("/uploadImage")
+    public Result<String> uploadImage(@Valid UploadImageDTO uploadImageDTO) throws IOException {
+        return fileService.uploadImage(uploadImageDTO);
     }
 }
