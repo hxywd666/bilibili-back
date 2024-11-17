@@ -2,18 +2,8 @@ server:
   port: 7070
   servlet:
     context-path: /admin
+
 spring:
-  file-storage: #文件存储配置
-    thumbnail-suffix: ".thumbnali.jpg" #缩略图后缀，例如【.min.jpg】【.png】
-    aliyun-oss:
-      - platform: aliyun-oss-1 # 存储平台标识
-        enable-storage: true  # 启用存储
-        access-key: ${ALIYUN_ACCESS_KEY}
-        secret-key: ${ALIYUN_SECRET_KEY}
-        end-point: ${ALIYUN_END_POINT}
-        bucket-name: bilibili-back
-        domain: ${ALIYUN_DOMAIN}
-        base-path: category/ # 基础路径
   servlet:
     multipart:
       max-file-size: 10MB
@@ -58,6 +48,11 @@ mybatis-plus:
       update-strategy: not_null
 project:
   folder: c:/Study/webser/easylive/
+file:
+  storage:
+    local:
+      path: /upload
+      enabled: true
 log:
   root:
     level: debug

@@ -23,6 +23,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -50,6 +51,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
             if (update <= 0){
                 throw new CategoryException("更新失败");
             }
+            saveToRedis(new CategoryQueryDTO());
             return;
         }
         // 转为存储对象
@@ -72,17 +74,6 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     // 根据查询条件，模糊查询并且返回树状结构给前端
     @Override
     public List<CategoryVO> loadCategory(CategoryQueryDTO categoryQuery) throws JsonProcessingException {
-        // 根据查询条件去redis中看看是否存在
-        //if (categoryQuery.isDefault() &&
-        //        Boolean.TRUE.equals(redisTemplate.hasKey(RedisConstant.CATEGOTY_LIST_KEY + categoryQuery.toString()))){
-        //    String listJson = (String) redisTemplate.opsForValue().get(RedisConstant.CATEGOTY_LIST_KEY + categoryQuery.toString());
-        //    if (listJson != null) {
-        //        // 将 JSON 字符串反序列化为 List<CategoryVO>
-        //        List<CategoryVO> categoryVOS = new ObjectMapper().readValue(listJson, new TypeReference<List<CategoryVO>>() {});
-        //        return categoryVOS; // 如果 Redis 中有数据，直接返回
-        //    }
-        //}
-        // 不为空根据条件查询数据库
         categoryQuery.setConvertToTree(true);
         List<Category> categories = categoryMapper.selectCategoryByParam(categoryQuery);
         // 转为返回给前端类型
@@ -96,14 +87,19 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         if (categoryQuery.getConvertToTree() != null && categoryQuery.getConvertToTree()){
             convertToTree(categoryVOS, CategoryConstant.PID_ZERO);
         }
-
-        //// 将结果存储到 Redis (可选)
-        //String json = new ObjectMapper().writeValueAsString(categoryVOS);
-        //redisTemplate.opsForValue().set(RedisConstant.CATEGOTY_LIST_KEY + categoryQuery.toString(), json);
-
+        sortCategories(categoryVOS);
         return categoryVOS;
     }
-
+    // 每一级按照sort排序
+    private void sortCategories(List<CategoryVO> categories) {
+        if (categories == null || categories.isEmpty()) {
+            return;
+        }
+        categories.sort(Comparator.comparingInt(CategoryVO::getSort));
+        for (CategoryVO categoryVO : categories) {
+            sortCategories(categoryVO.getChildren());
+        }
+    }
     // 这里删除以一级分类以及他对应的二级分类数据
     @Override
     public int delCategory(Integer categoryId) throws JsonProcessingException {
@@ -119,7 +115,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         return delete;
     }
 
-    // 更新排序信息，这里主要针对的是根据耳机分类标签进行更新排序信息
+    // 更新排序信息，这里主要针对的是根据pid分类标签进行更新排序信息
     @Override
     public int updateSort(Integer pCategoryId, String ids) throws JsonProcessingException {
         ArrayList<Category> updateCategory = new ArrayList<>();
@@ -160,7 +156,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         //}
         categoryQuery.setConvertToTree(true);
         List<CategoryVO> categories = loadCategory(categoryQuery);
-        redisTemplate.opsForValue().set(RedisConstant.CATEGOTY_LIST_KEY + categoryQuery.toString(),categories);
+        redisTemplate.opsForValue().set(RedisConstant.CATEGOTY_LIST_KEY ,categories);
 
     }
 }
