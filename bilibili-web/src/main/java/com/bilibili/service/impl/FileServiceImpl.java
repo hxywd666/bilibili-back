@@ -13,6 +13,7 @@ import com.bilibili.properties.SysSettingProperties;
 import com.bilibili.result.Result;
 import com.bilibili.service.FileService;
 import com.bilibili.utils.ConvertUtils;
+import com.bilibili.utils.FFmpegUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,8 @@ public class FileServiceImpl implements FileService {
     private FileProperties fileProperties;
     @Autowired
     private SysSettingProperties sysSettingProperties;
-
+    @Autowired
+    private FFmpegUtils fFmpegUtils;
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
     @Override
@@ -164,6 +166,7 @@ public class FileServiceImpl implements FileService {
         String filePath = folder + "/" + fileName;
         uploadImageDTO.getFile().transferTo(new File(filePath));
         if (uploadImageDTO.getCreateThumbnail()) {
+            fFmpegUtils.createImageThumbnail(filePath);
         }
         return Result.success(FileConstant.COVER_FILE_PATH + day + "/" + fileName);
     }
