@@ -8,14 +8,9 @@ import com.bilibili.service.CategoryService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -26,14 +21,10 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
-    @PostMapping("loadAllCategory")
-    public Result loadCategory(HttpServletRequest request, HttpServletResponse response, CategoryQueryDTO categoryQuery) throws JsonProcessingException {
-
-
-        List<CategoryVO> categoryList = categoryService.loadCategory(categoryQuery);
-        return Result.success(categoryList);
+    @PostMapping("/loadAllCategory")
+    public Result<List<CategoryVO>> loadCategory(CategoryQueryDTO categoryQuery) {
+        return categoryService.loadCategory(categoryQuery);
     }
-
 }

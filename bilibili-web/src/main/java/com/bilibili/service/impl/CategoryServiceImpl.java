@@ -11,18 +11,13 @@ import com.bilibili.result.Result;
 import com.bilibili.service.CategoryService;
 import com.bilibili.utils.ConvertUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> implements CategoryService {
@@ -31,17 +26,16 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     private CategoryMapper categoryMapper;
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
+
+    private static final String REDIS_KEY = RedisConstant.CLIENT_KEY_PREFIX + RedisConstant.CATEGOTY_LIST_KEY;
 
     @Override
-    public List<CategoryVO> loadCategory(CategoryQueryDTO categoryQuery) throws JsonProcessingException {
-        if(categoryQuery.isDefault()){
-            String redisKey = RedisConstant.CATEGOTY_LIST_KEY ;
-            if (redisTemplate.hasKey(redisKey)) {
-                Object data = redisTemplate.opsForValue().get(redisKey);
-                List list = ConvertUtils.convertObject(data, List.class);
-                return list;
-            }
+    public Result<List<CategoryVO>> loadCategory(CategoryQueryDTO categoryQuery) {
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(REDIS_KEY))) {
+            Object object = redisTemplate.opsForValue().get(REDIS_KEY);
+            ArrayList<CategoryVO> categoryVOS = ConvertUtils.convertObject(object, ArrayList.class);
+            return Result.success(categoryVOS);
         }
         categoryQuery.setConvertToTree(true);
         List<Category> categories = categoryMapper.selectCategoryByParam(categoryQuery);
@@ -57,7 +51,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
             convertToTree(categoryVOS, CategoryConstant.PID_ZERO);
         }
         sortCategories(categoryVOS);
-        return categoryVOS;
+        return Result.success(categoryVOS);
     }
 
     // 每一级按照sort排序
@@ -84,5 +78,4 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         }
         return children;
     }
-
 }

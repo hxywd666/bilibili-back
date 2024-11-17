@@ -12,11 +12,9 @@ import javax.validation.constraints.NotNull;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryUploadFileDTO {
-
+public class UploadImageDTO {
     @NotNull
     private MultipartFile file;
-
     @NotNull
     private Boolean createThumbnail;
 }

@@ -5,6 +5,7 @@ import com.bilibili.constant.MessageConstant;
 import com.bilibili.constant.RedisConstant;
 import com.bilibili.constant.UriConstant;
 import com.bilibili.exception.LoginErrorException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Component
+@Slf4j
 public class AdminInterceptor implements HandlerInterceptor {
 
     @Autowired
@@ -40,7 +42,7 @@ public class AdminInterceptor implements HandlerInterceptor {
             Cookie[] cookies = request.getCookies();
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
-                    if (cookie.getName().equals(AccountConstant.CLIENT_COOKIE_KEY) && StringUtils.hasText(cookie.getValue())) {
+                    if (cookie.getName().equals(AccountConstant.ADMIN_COOKIE_KEY) && StringUtils.hasText(cookie.getValue())) {
                         token = cookie.getValue();
                         break;
                     }

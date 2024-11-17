@@ -2,13 +2,10 @@ package com.bilibili.service.impl;
 
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.RandomUtil;
-import com.bilibili.constant.AccountConstant;
 import com.bilibili.constant.EmailConstant;
 import com.bilibili.constant.MessageConstant;
 import com.bilibili.constant.RedisConstant;
-import com.bilibili.enumeration.HttpStatusEnum;
 import com.bilibili.exception.EmailErrorException;
-import com.bilibili.exception.ParamErrorException;
 import com.bilibili.pojo.dto.EmailSendDTO;
 import com.bilibili.pojo.vo.EmailSendVO;
 import com.bilibili.result.Result;
@@ -17,9 +14,7 @@ import com.bilibili.utils.EmailUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.concurrent.TimeUnit;
 

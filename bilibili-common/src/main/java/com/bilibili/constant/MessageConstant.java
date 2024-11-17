@@ -4,11 +4,16 @@ package com.bilibili.constant;
 public class MessageConstant {
     public static final String SYSTEM_ERROR = "服务端异常";
     public static final String PARAM_ERROR = "参数错误";
+    public static final String DELETE_ERROR = "删除失败";
+    public static final String UPDATE_ERROR = "更新失败";
     public static final String CAPTCHA_ERROR = "验证码错误";
     public static final String EMAIL_OR_PASSWORD_ERROR = "邮箱或密码错误";
     public static final String USER_STATUS_ERROR = "账户已被冻结";
     public static final String ACCOUNT_OR_PASSWORD_ERROR = "账号或密码错误";
     public static final String LOGIN_TIMED_OUT = "登录超时";
+    public static final String FILE_OPTION_ERROR = "文件处理异常";
     public static final String FILE_UPLOAD_ERROR = "文件上传错误";
     public static final String FILE_OVERSIZE = "文件超出大小限制";
+    public static final String FILE_DOWNLOAD_ERROR = "文件下载失败";
+    public static final String CATEGORY_EXISTED = "分类已存在";
 }

@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 public interface AccountService {
     Result<CheckCodeVO> getCheckCode();
 
-    Result login(HttpServletRequest request, HttpServletResponse response, LoginDTO loginDTO);
+    Result<String> login(HttpServletRequest request, HttpServletResponse response, LoginDTO loginDTO);
 
     void logout(HttpServletRequest request, HttpServletResponse response);
 }
