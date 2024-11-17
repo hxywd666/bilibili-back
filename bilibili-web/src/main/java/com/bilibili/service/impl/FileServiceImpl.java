@@ -1,5 +1,6 @@
 package com.bilibili.service.impl;
 
+import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.RandomUtil;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.model.OSSObject;
@@ -8,22 +9,20 @@ import com.bilibili.constant.MessageConstant;
 import com.bilibili.constant.RedisConstant;
 import com.bilibili.context.UserContext;
 import com.bilibili.exception.FileErrorException;
-import com.bilibili.pojo.dto.DeleteUploadedVideo;
-import com.bilibili.pojo.dto.PreUploadVideoDTO;
-import com.bilibili.pojo.dto.UploadVideoRedisDTO;
-import com.bilibili.pojo.dto.UploadVideoDTO;
-import com.bilibili.properties.CategoryProperties;
+import com.bilibili.pojo.dto.*;
 import com.bilibili.properties.FileProperties;
 import com.bilibili.properties.SysSettingProperties;
 import com.bilibili.result.Result;
 import com.bilibili.service.FileService;
 import com.bilibili.utils.ConvertUtils;
+import com.bilibili.utils.FFmpegUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.dromara.x.file.storage.core.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -46,17 +45,14 @@ public class FileServiceImpl implements FileService {
     @Autowired
     private SysSettingProperties sysSettingProperties;
 
-    // 种类开始
     @Autowired
     private FileStorageService fileStorageService;
-
     @Autowired
     private CategoryProperties categoryProperties;
-
     @Autowired
     private OSS ossClient;
-    // 种类结束
-
+    @Autowired
+    private FFmpegUtils fFmpegUtils;
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
     @Override
@@ -66,7 +62,7 @@ public class FileServiceImpl implements FileService {
         String uploadId = RandomUtil.randomString(FileConstant.UPLOAD_ID_LENGTH);
         String day = sdf.format(new Date());
         String filePath = day + "/" + userId + uploadId;
-        String folder = fileProperties.getVideo() + FileConstant.TEMP_VIDEO_UPLOAD_FOLDER + filePath;
+        String folder = fileProperties.getVideo() + filePath;
         File folderFile = new File(folder);
         if (!folderFile.exists()) {
             boolean mkdirs = folderFile.mkdirs();
@@ -120,7 +116,7 @@ public class FileServiceImpl implements FileService {
                 || currentChunkIndex > uploadVideoRedisDTO.getChunks() - 1) {
             throw new FileErrorException(MessageConstant.FILE_UPLOAD_ERROR);
         }
-        String folder = fileProperties.getVideo() + FileConstant.TEMP_VIDEO_UPLOAD_FOLDER + uploadVideoRedisDTO.getFilePath();
+        String folder = fileProperties.getVideo() + uploadVideoRedisDTO.getFilePath();
         File targetFile = new File(folder + "/" + currentChunkIndex);
         uploadVideoDTO.getChunkFile().transferTo(targetFile);
         uploadVideoRedisDTO.setChunkIndex(currentChunkIndex);
@@ -144,10 +140,10 @@ public class FileServiceImpl implements FileService {
         //获取预上传文件信息
         Object object = redisTemplate.opsForValue().get(
                 RedisConstant.CLIENT_KEY_PREFIX
-                        + RedisConstant.FILE_REDIS_KEY
-                        + RedisConstant.UPLOAD_FILE_REDIS_KEY
-                        + UserContext.getUserId() + ":"
-                        + uploadId
+                + RedisConstant.FILE_REDIS_KEY
+                + RedisConstant.UPLOAD_FILE_REDIS_KEY
+                + UserContext.getUserId() + ":"
+                + uploadId
         );
         UploadVideoRedisDTO uploadVideoRedisDTO = ConvertUtils.convertObject(object, UploadVideoRedisDTO.class);
         if (uploadVideoRedisDTO == null) {
@@ -160,10 +156,9 @@ public class FileServiceImpl implements FileService {
                      + UserContext.getUserId() + ":"
                      + uploadId
         );
-        FileUtils.deleteDirectory(new File(fileProperties.getVideo() + FileConstant.TEMP_VIDEO_UPLOAD_FOLDER + uploadVideoRedisDTO.getFilePath()));
+        FileUtils.deleteDirectory(new File(fileProperties.getVideo() + uploadVideoRedisDTO.getFilePath()));
         return Result.success(uploadId);
     }
-
     /**
      * 种类获取
      * 根据资源名称获取资源文件,
@@ -215,5 +210,29 @@ public class FileServiceImpl implements FileService {
             // 当发生IO异常时，抛出自定义异常，指示文件下载失败
             throw new FileErrorException("文件下载失败");
         }
+    }  
+    @Override
+    public Result<String> uploadImage(UploadImageDTO uploadImageDTO) throws IOException {
+        String day = sdf.format(new Date());
+        String folder = fileProperties.getImage() + FileConstant.COVER_FILE_PATH + day;
+        File folderFile = new File(folder);
+        if (!folderFile.exists()) {
+            boolean mkdirs = folderFile.mkdirs();
+            if (!mkdirs) {
+                throw new FileErrorException(MessageConstant.FILE_UPLOAD_ERROR);
+            }
+        }
+        String originalFilename = uploadImageDTO.getFile().getOriginalFilename();
+        if (!StringUtils.hasText(originalFilename)) {
+            throw new FileErrorException(MessageConstant.FILE_UPLOAD_ERROR);
+        }
+        String fileSuffix = originalFilename.substring(originalFilename.lastIndexOf("."));
+        String fileName = UUID.randomUUID().toString(true) + fileSuffix;
+        String filePath = folder + "/" + fileName;
+        uploadImageDTO.getFile().transferTo(new File(filePath));
+        if (uploadImageDTO.getCreateThumbnail()) {
+            fFmpegUtils.createImageThumbnail(filePath);
+        }
+        return Result.success(FileConstant.COVER_FILE_PATH + day + "/" + fileName);
     }
 }

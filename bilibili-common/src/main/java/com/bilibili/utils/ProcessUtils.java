@@ -1,10 +1,8 @@
 package com.bilibili.utils;
 
-import com.bilibili.exception.BaseException;
 import com.bilibili.exception.FileErrorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;

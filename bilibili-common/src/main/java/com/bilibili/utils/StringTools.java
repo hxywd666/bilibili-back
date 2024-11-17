@@ -1,7 +1,5 @@
 package com.bilibili.utils;
 
-import com.bilibili.exception.BaseException;
-import com.bilibili.exception.FileErrorException;
 import com.bilibili.exception.ParamErrorException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;

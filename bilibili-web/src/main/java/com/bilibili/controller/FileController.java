@@ -3,6 +3,7 @@ package com.bilibili.controller;
 import com.bilibili.pojo.dto.CategoryGetFileSourceNameDTO;
 import com.bilibili.pojo.dto.DeleteUploadedVideo;
 import com.bilibili.pojo.dto.PreUploadVideoDTO;
+import com.bilibili.pojo.dto.UploadImageDTO;
 import com.bilibili.pojo.dto.UploadVideoDTO;
 import com.bilibili.properties.SysSettingProperties;
 import com.bilibili.result.Result;
@@ -49,10 +50,14 @@ public class FileController {
         return Result.success(new SysSettingProperties());
     }
 
-
     @GetMapping("/getResource")
     public void getResource(HttpServletResponse response, CategoryGetFileSourceNameDTO categoryGetFileSourceNameDTO) {
         fileService.getImage(response,categoryGetFileSourceNameDTO.getSourceName());
     }
-
+  
+    //上传图片接口
+    @PostMapping("/uploadImage")
+    public Result<String> uploadImage(@Valid UploadImageDTO uploadImageDTO) throws IOException {
+        return fileService.uploadImage(uploadImageDTO);
+    }
 }

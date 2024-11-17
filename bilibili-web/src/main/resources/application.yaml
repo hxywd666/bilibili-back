@@ -46,8 +46,6 @@ mybatis-plus:
     db-config:
       id-type: auto
       update-strategy: not_null
-file:
-  video: E:/bilibili/video/
 log:
   root:
     level: debug
@@ -62,3 +60,6 @@ system:
     video-count: 10
     comment-count: 10
     danmu-count: 20
+file:
+  video: E:/bilibili/video/
+  image: E:/bilibili/image/
