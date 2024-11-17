@@ -24,4 +24,7 @@ public class RedisConstant {
     public static final int PIC_CAPTCHA_EXPIRE = ONE_MIN_MILLISECOND; //图形验证码有效期(1min)
     public static final int EMAIL_CAPTCHA_EXPIRE = ONE_MIN_MILLISECOND * 5; //邮箱验证码有效期(5min)
     public static final int UPLOAD_FILE_EXPIRE = ONE_DAY_MILLISECOND; //上传文件有效期(1天)
+
+    /*种类信息key*/
+    public static final String CATEGOTY_LIST_KEY = "category:";
 }

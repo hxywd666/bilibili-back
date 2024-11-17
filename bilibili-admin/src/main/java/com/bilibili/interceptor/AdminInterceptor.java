@@ -2,6 +2,7 @@ package com.bilibili.interceptor;
 
 import com.bilibili.constant.AccountConstant;
 import com.bilibili.constant.MessageConstant;
+import com.bilibili.constant.RedisConstant;
 import com.bilibili.constant.UriConstant;
 import com.bilibili.exception.LoginErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ public class AdminInterceptor implements HandlerInterceptor {
         if (!StringUtils.hasText(token)) {
             throw new LoginErrorException(MessageConstant.LOGIN_TIMED_OUT);
         }
-        if (redisTemplate.opsForValue().get(token) == null) {
+        if (redisTemplate.opsForValue().get(RedisConstant.ADMIN_KEY_PREFIX + RedisConstant.LOGIN_REDIS_KEY + token) == null) {
             throw new LoginErrorException(MessageConstant.LOGIN_TIMED_OUT);
         }
         return true;
