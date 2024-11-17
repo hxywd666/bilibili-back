@@ -1,9 +1,13 @@
 package com.bilibili.service.impl;
 
+import cn.hutool.core.lang.UUID;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.model.OSSObject;
+import com.bilibili.constant.MessageConstant;
 import com.bilibili.exception.FileErrorException;
-import com.bilibili.properties.CategoryProperties;
+import com.bilibili.pojo.dto.UploadImageDTO;
+import com.bilibili.properties.FileProperties;
+import com.bilibili.result.Result;
 import com.bilibili.service.FileService;
 import org.dromara.x.file.storage.core.FileInfo;
 import org.dromara.x.file.storage.core.FileStorageService;
@@ -17,39 +21,35 @@ import java.io.InputStream;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.UUID;
 
 @Service
 public class FileServiceImpl implements FileService {
     // 种类开始
     @Autowired
     private FileStorageService fileStorageService;
-
     @Autowired
-    private CategoryProperties categoryProperties;
-
+    private FileProperties fileProperties;
     @Autowired
     private OSS oss;
-    // 种类上传图片
+
     @Override
-    public String uploadImage(MultipartFile file, Boolean createThumbnail) {
-        String currentMonthPath = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMM")) + "/";
-        String uuid = UUID.randomUUID().toString();
-        String uniqueStr = uuid.replace("-", "").substring(0, 10);
+    public Result<String> uploadImage(UploadImageDTO uploadImageDTO) {
+        MultipartFile file = uploadImageDTO.getFile();
+        Boolean createThumbnail = uploadImageDTO.getCreateThumbnail();
+        String filePath = fileProperties.getImageOssFolder() + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "/";
+        String fileName = UUID.randomUUID().toString(true);
         FileInfo fileInfo = fileStorageService.of(file)
-                .setName(uniqueStr)
-                .setPlatform("aliyun-oss-1") // 确保平台名称与配置一致
-                .setPath(currentMonthPath) // 动态设置路径为 "category/yyyyMM/"
-                .setObjectId("0")   // 关联对象id，为了方便管理，不需要可以不写
-                .setObjectType("0") // 关联对象类型，为了方便管理，不需要可以不写
+                .setName(fileName)
+                .setPlatform("aliyun-oss-1")
+                .setPath(filePath)
+                .setObjectId("0")
+                .setObjectType("0")
                 .thumbnail(createThumbnail)
-                //.putAttr("category", "admin") // 保存一些属性，不需要可以不写
-                .upload();  // 将文件上传到对应地方
+                .upload();
         if(fileInfo == null){
-            throw new FileErrorException("文件上传失败");
+            throw new FileErrorException(MessageConstant.FILE_UPLOAD_ERROR);
         }
-        // 返回日期和名称组合的字符串
-        return fileInfo.getUrl();
+        return Result.success(fileInfo.getUrl());
     }
     /**
      * 种类
@@ -100,9 +100,7 @@ public class FileServiceImpl implements FileService {
             response.flushBuffer();
         } catch (IOException e) {
             // 当发生IO异常时，抛出自定义异常，指示文件下载失败
-            throw new FileErrorException("文件下载失败");
+            throw new FileErrorException(MessageConstant.FILE_DOWNLOAD_ERROR);
         }
     }
-
-    // 种类结束
 }

@@ -41,6 +41,8 @@
         <es.version>3.3.2</es.version>
         <hutool.version>5.8.12</hutool.version>
         <nashorn.version>15.4</nashorn.version>
+        <x-file-storage.version>2.2.1</x-file-storage.version>
+        <aliyun-oss.version>3.16.1</aliyun-oss.version>
     </properties>
 
     <dependencyManagement>
@@ -147,6 +149,20 @@
                 <groupId>org.openjdk.nashorn</groupId>
                 <artifactId>nashorn-core</artifactId>
                 <version>${nashorn.version}</version>
+            </dependency>
+
+            <!--x-file-storage-->
+            <dependency>
+                <groupId>org.dromara.x-file-storage</groupId>
+                <artifactId>x-file-storage-spring</artifactId>
+                <version>${x-file-storage.version}</version>
+            </dependency>
+
+            <!--阿里云OSS-->
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>${aliyun-oss.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

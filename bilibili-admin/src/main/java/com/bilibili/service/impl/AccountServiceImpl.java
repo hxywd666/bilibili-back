@@ -51,7 +51,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Result login(HttpServletRequest request, HttpServletResponse response, LoginDTO loginDTO) {
+    public Result<String> login(HttpServletRequest request, HttpServletResponse response, LoginDTO loginDTO) {
         //检查验证码并删除
         String captcha = (String) redisTemplate.opsForValue().get(loginDTO.getCheckCodeKey());
         redisTemplate.delete(loginDTO.getCheckCodeKey());

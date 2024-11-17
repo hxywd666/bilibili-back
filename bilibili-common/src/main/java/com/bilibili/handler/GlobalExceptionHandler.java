@@ -40,6 +40,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     public Result IOExceptionHandler(IOException ex) {
         log.error("文件异常:{}", ex.getMessage());
-        return Result.error(HttpStatusEnum.INTERNAL_SERVER_ERROR, MessageConstant.FILE_UPLOAD_ERROR);
+        return Result.error(HttpStatusEnum.INTERNAL_SERVER_ERROR, MessageConstant.FILE_OPTION_ERROR);
     }
 }

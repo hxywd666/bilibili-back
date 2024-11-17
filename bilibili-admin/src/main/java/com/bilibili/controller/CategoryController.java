@@ -1,5 +1,6 @@
 package com.bilibili.controller;
 
+import com.bilibili.constant.MessageConstant;
 import com.bilibili.enumeration.HttpStatusEnum;
 import com.bilibili.exception.CategoryException;
 import com.bilibili.pojo.dto.CategoryChangeSortDTO;
@@ -33,26 +34,19 @@ public class CategoryController {
         return Result.success();
     }
     @PostMapping("/loadCategory")
-    public Result loadCategory(HttpServletRequest request, HttpServletResponse response, CategoryQueryDTO categoryQuery) throws JsonProcessingException {
-        List<CategoryVO> categoryList = categoryService.loadCategory(categoryQuery);
-        return Result.success(categoryList);
+    public Result<List<CategoryVO>> loadCategory(HttpServletRequest request, HttpServletResponse response, CategoryQueryDTO categoryQuery) throws JsonProcessingException {
+        return categoryService.loadCategory(categoryQuery);
     }
 
     @PostMapping("/delCategory")
     public Result delCategory(CategoryIdDTO categoryIddto) throws JsonProcessingException {
-        int deleted = categoryService.delCategory(categoryIddto.getCategoryId());
-        if (deleted <= 0){
-            throw new CategoryException("删除失败，为找到删除对象");
-        }
+        categoryService.delCategory(categoryIddto.getCategoryId());
         return Result.success();
     }
 
     @PostMapping("/changeSort")
     public Result changeSort(CategoryChangeSortDTO categoryChangeSortDTO) throws JsonProcessingException {
-        int updateSort = categoryService.updateSort(categoryChangeSortDTO.getPCategoryId(), categoryChangeSortDTO.getCategoryIds());
-        if (updateSort <= 0){
-            return Result.error(HttpStatusEnum.ERROR, "更新失败");
-        }
+        categoryService.updateSort(categoryChangeSortDTO.getPCategoryId(), categoryChangeSortDTO.getCategoryIds());
         return Result.success();
     }
 

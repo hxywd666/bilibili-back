@@ -1,18 +1,33 @@
 dromara:
   x-file-storage:
-    default-platform: aliyun-oss-1 #默认使用的存储平台
-    thumbnail-suffix: "_thumbnail.jpg.jpg" #缩略图后缀，例如【.min.jpg】【.png】
+    default-platform: aliyun-oss-1
+    thumbnail-suffix: "_thumbnail.jpg"
     aliyun-oss:
-      - platform: aliyun-oss-1 # 存储平台标识
-        enable-storage: true # 启用存储
-        access-key: ${OSS_ACCESS_KEY_ID}
-        secret-key: ${OSS_ACCESS_KEY_SECRET}
-        end-point: oss-cn-hangzhou.aliyuncs.com # 改成自己的
-        bucket-name: bilibili-back # 改成自己的
-        domain: https://bilibili-back.oss-cn-hangzhou.aliyuncs.com/ # 访问域名，注意“/”结尾，例如：https://abc.oss-cn-shanghai.aliyuncs.com/
-        base-path: category/ # 基础路径
+      - platform: aliyun-oss-1
+        enable-storage: true
+        access-key:
+        secret-key:
+        end-point: oss-cn-hangzhou.aliyuncs.com
+        bucket-name: my-bilibili-project
+        domain: https://my-bilibili-project.oss-cn-hangzhou.aliyuncs.com/
+        base-path:
 spring:
   servlet:
     multipart:
       max-file-size: 1000MB
       max-request-size: 1000MB
+file-folder:
+  local:
+    video: E:/bilibili/video/
+  oss:
+    video: video/
+    image: image/
+system:
+  setting:
+    register-coin-count: 10
+    post-video-coin-count: 10
+    video-size: 10485760
+    video-p-count: 10
+    video-count: 10
+    comment-count: 10
+    danmu-count: 20

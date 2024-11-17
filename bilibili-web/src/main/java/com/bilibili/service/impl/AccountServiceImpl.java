@@ -2,10 +2,7 @@ package com.bilibili.service.impl;
 
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.RandomUtil;
-import cn.hutool.crypto.digest.MD5;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bilibili.constant.AccountConstant;
 import com.bilibili.constant.MessageConstant;
@@ -25,7 +22,6 @@ import com.bilibili.result.Result;
 import com.bilibili.service.AccountService;
 import com.bilibili.utils.ConvertUtils;
 import com.bilibili.utils.IpUtils;
-import com.bilibili.utils.ValidatorUtils;
 import com.wf.captcha.ArithmeticCaptcha;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

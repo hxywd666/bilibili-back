@@ -49,17 +49,3 @@ mybatis-plus:
 log:
   root:
     level: debug
-project:
-  folder: c:/Study/webser/easylive/
-system:
-  setting:
-    register-coin-count: 10
-    post-video-coin-count: 10
-    video-size: 10485760
-    video-p-count: 10
-    video-count: 10
-    comment-count: 10
-    danmu-count: 20
-file:
-  video: E:/bilibili/video/
-  image: E:/bilibili/image/

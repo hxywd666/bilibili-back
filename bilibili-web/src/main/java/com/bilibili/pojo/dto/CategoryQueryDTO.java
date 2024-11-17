@@ -43,10 +43,7 @@ public class CategoryQueryDTO {
                 isStringEmpty(backgroundFuzzy) &&
                 isStringEmpty(icon);
     }
-
     private boolean isStringEmpty(String str) {
         return str == null || str.trim().isEmpty();
     }
-
-
 }

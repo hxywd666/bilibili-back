@@ -35,7 +35,8 @@ public class FileController {
     //文件正式上传
     @PostMapping("/uploadVideo")
     public Result uploadVideo(@Valid UploadVideoDTO uploadVideoDTO) throws IOException {
-        return fileService.uploadVideo(uploadVideoDTO);
+        fileService.uploadVideo(uploadVideoDTO);
+        return Result.success();
     }
 
     //删除上传文件

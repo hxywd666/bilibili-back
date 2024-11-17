@@ -1,7 +1,7 @@
 package com.bilibili.controller;
 
 import com.bilibili.pojo.dto.CategoryGetFileSourceNameDTO;
-import com.bilibili.pojo.dto.CategoryUploadFileDTO;
+import com.bilibili.pojo.dto.UploadImageDTO;
 import com.bilibili.result.Result;
 import com.bilibili.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping("/file")
@@ -22,10 +21,8 @@ public class FileController {
     private FileService fileService;
 
     @PostMapping("/uploadImage")
-    public Result uploadImage(CategoryUploadFileDTO categoryUploadFileDTO){// 获取当前日期并格式化为 yyyyMM 格式
-        String url = fileService.uploadImage(categoryUploadFileDTO.getFile(), categoryUploadFileDTO.getCreateThumbnail());
-        // 返回日期和名称组合的字符串
-        return Result.success(url);
+    public Result<String> uploadImage(UploadImageDTO uploadImageDTO){
+        return fileService.uploadImage(uploadImageDTO);
     }
 
     @GetMapping("/getResource")

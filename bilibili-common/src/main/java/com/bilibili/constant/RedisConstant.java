@@ -26,5 +26,5 @@ public class RedisConstant {
     public static final int UPLOAD_FILE_EXPIRE = ONE_DAY_MILLISECOND; //上传文件有效期(1天)
 
     /*种类信息key*/
-    public static final String CATEGOTY_LIST_KEY = "category:";
+    public static final String CATEGOTY_LIST_KEY = "category";
 }
