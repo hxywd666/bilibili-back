@@ -24,16 +24,19 @@ public class AccountController {
 
     @PostMapping("/checkCode")
     public Result<CheckCodeVO> getCheckCode() {
+        //return Result.success();
         return accountService.getCheckCode();
     }
 
     @PostMapping("/login")
     public Result login (HttpServletRequest request, HttpServletResponse response, @Valid LoginDTO loginDTO) {
+        //return Result.success();
         return accountService.login(request, response,loginDTO);
     }
 
     @PostMapping("/logout")
     public Result logout(HttpServletRequest request, HttpServletResponse response) {
+        //return Result.success();
         accountService.logout(request, response);
         return Result.success();
     }

@@ -2,17 +2,19 @@ server:
   port: 7070
   servlet:
     context-path: /admin
+
 spring:
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 15MB
+      location: C:/Study/temp # 更改为有写入和删除权限的目录
   application:
     name: bilibili-admin
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/bilibili?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true&useSSL=false
     username: root
-    password: 112358
+    password: zbt041205
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       pool-name: HikariCPDatasource
@@ -24,7 +26,7 @@ spring:
       connection-timeout: 30000
       connection-test-query: SELECT 1
   redis:
-    database: 0
+    database: 1
     host: 127.0.0.1
     port: 6379
     jedis:
@@ -45,7 +47,12 @@ mybatis-plus:
       id-type: auto
       update-strategy: not_null
 project:
-  folder: c:/webser/easylive/
+  folder: c:/Study/webser/easylive/
+file:
+  storage:
+    local:
+      path: /upload
+      enabled: true
 log:
   root:
     level: debug

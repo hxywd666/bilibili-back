@@ -11,6 +11,7 @@ import com.bilibili.pojo.vo.CheckCodeVO;
 import com.bilibili.properties.AdminProperties;
 import com.bilibili.result.Result;
 import com.bilibili.service.AccountService;
+import com.bilibili.utils.Md5Utils;
 import com.wf.captcha.ArithmeticCaptcha;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,9 @@ public class AccountServiceImpl implements AccountService {
         }
 
         //检查邮箱、密码(前端已经加密过了)、账户状态
-        if ( !loginDTO.getAccount().equals(adminProperties.getAccount()) || !loginDTO.getPassword().equals(adminProperties.getPassword())) {
+        // 进行md5加密
+        String md5password = Md5Utils.md5Encrypt(adminProperties.getPassword());
+        if ( !loginDTO.getAccount().equals(adminProperties.getAccount()) || !loginDTO.getPassword().equals(md5password)) {
             throw new LoginErrorException(MessageConstant.ACCOUNT_OR_PASSWORD_ERROR);
         }
 
