@@ -14,7 +14,6 @@ import com.bilibili.pojo.vo.EmailSendVO;
 import com.bilibili.result.Result;
 import com.bilibili.service.EmailService;
 import com.bilibili.utils.EmailUtils;
-import com.bilibili.utils.ValidatorUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;

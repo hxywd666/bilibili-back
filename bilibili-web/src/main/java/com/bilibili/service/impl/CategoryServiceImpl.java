@@ -9,6 +9,7 @@ import com.bilibili.pojo.entity.Category;
 import com.bilibili.pojo.vo.CategoryVO;
 import com.bilibili.result.Result;
 import com.bilibili.service.CategoryService;
+import com.bilibili.utils.ConvertUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,6 +35,14 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 
     @Override
     public List<CategoryVO> loadCategory(CategoryQueryDTO categoryQuery) throws JsonProcessingException {
+        if(categoryQuery.isDefault()){
+            String redisKey = RedisConstant.CATEGOTY_LIST_KEY ;
+            if (redisTemplate.hasKey(redisKey)) {
+                Object data = redisTemplate.opsForValue().get(redisKey);
+                List list = ConvertUtils.convertObject(data, List.class);
+                return list;
+            }
+        }
         categoryQuery.setConvertToTree(true);
         List<Category> categories = categoryMapper.selectCategoryByParam(categoryQuery);
         // 转为返回给前端类型

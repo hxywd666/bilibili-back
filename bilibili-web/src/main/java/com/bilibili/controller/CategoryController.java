@@ -30,11 +30,8 @@ public class CategoryController {
 
     @PostMapping("loadAllCategory")
     public Result loadCategory(HttpServletRequest request, HttpServletResponse response, CategoryQueryDTO categoryQuery) throws JsonProcessingException {
-        String redisKey = RedisConstant.CATEGOTY_LIST_KEY ;
-        if (redisTemplate.hasKey(redisKey)) {
-            Object data = redisTemplate.opsForValue().get(redisKey);
-            return Result.success(data);
-        }
+
+
         List<CategoryVO> categoryList = categoryService.loadCategory(categoryQuery);
         return Result.success(categoryList);
     }

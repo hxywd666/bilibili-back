@@ -10,6 +10,7 @@ import com.bilibili.constant.RedisConstant;
 import com.bilibili.context.UserContext;
 import com.bilibili.exception.FileErrorException;
 import com.bilibili.pojo.dto.*;
+import com.bilibili.properties.CategoryProperties;
 import com.bilibili.properties.FileProperties;
 import com.bilibili.properties.SysSettingProperties;
 import com.bilibili.result.Result;

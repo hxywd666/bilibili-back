@@ -25,7 +25,6 @@ import com.bilibili.result.Result;
 import com.bilibili.service.AccountService;
 import com.bilibili.utils.ConvertUtils;
 import com.bilibili.utils.IpUtils;
-import com.bilibili.utils.ValidatorUtils;
 import com.wf.captcha.ArithmeticCaptcha;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
