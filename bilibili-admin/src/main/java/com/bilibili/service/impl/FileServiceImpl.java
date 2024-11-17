@@ -1,18 +1,16 @@
 package com.bilibili.service.impl;
 
-import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.OSS;
 import com.aliyun.oss.model.OSSObject;
 import com.bilibili.exception.FileErrorException;
 import com.bilibili.properties.CategoryProperties;
-import com.bilibili.result.Result;
-import com.bilibili.service.CategoryFileService;
-import com.bilibili.service.CategoryService;
+import com.bilibili.service.FileService;
 import org.dromara.x.file.storage.core.FileInfo;
 import org.dromara.x.file.storage.core.FileStorageService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,15 +20,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Service
-public class CategoryFileServiceImpl implements CategoryFileService {
-    @Resource
+public class FileServiceImpl implements FileService {
+    // 种类开始
+    @Autowired
     private FileStorageService fileStorageService;
 
-    @Resource
+    @Autowired
     private CategoryProperties categoryProperties;
 
-    @Resource
-    private OSSClient ossClient;
+    @Autowired
+    private OSS oss;
+    // 种类上传图片
     @Override
     public String uploadImage(MultipartFile file, Boolean createThumbnail) {
         String currentMonthPath = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMM")) + "/";
@@ -52,6 +52,7 @@ public class CategoryFileServiceImpl implements CategoryFileService {
         return fileInfo.getUrl();
     }
     /**
+     * 种类
      * 根据资源名称获取资源文件
      * 该方法主要用于下载存储在OSS（对象存储服务）中的文件
      * 它通过解析资源名称来确定文件的位置，并将文件内容写入HTTP响应中
@@ -75,7 +76,7 @@ public class CategoryFileServiceImpl implements CategoryFileService {
             String objectKey = url.getPath().substring(1);
 
             // 使用OSS客户端从指定的bucket和对象键名中获取OSS对象
-            OSSObject ossObject = ossClient.getObject(bucketName, objectKey);
+            OSSObject ossObject = oss.getObject(bucketName, objectKey);
 
             // 设置响应内容类型，表示将发送二进制数据
             response.setContentType("application/octet-stream");
@@ -102,4 +103,6 @@ public class CategoryFileServiceImpl implements CategoryFileService {
             throw new FileErrorException("文件下载失败");
         }
     }
+
+    // 种类结束
 }

@@ -6,6 +6,7 @@ import com.bilibili.pojo.vo.CategoryVO;
 import com.bilibili.result.Result;
 import com.bilibili.service.CategoryService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,10 +22,10 @@ import java.util.List;
 @RequestMapping("/category")
 public class CategoryController {
 
-    @Resource
+    @Autowired
     private CategoryService categoryService;
 
-    @Resource
+    @Autowired
     private RedisTemplate redisTemplate;
 
     @PostMapping("loadAllCategory")

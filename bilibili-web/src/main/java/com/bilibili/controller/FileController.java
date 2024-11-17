@@ -1,5 +1,6 @@
 package com.bilibili.controller;
 
+import com.bilibili.pojo.dto.CategoryGetFileSourceNameDTO;
 import com.bilibili.pojo.dto.DeleteUploadedVideo;
 import com.bilibili.pojo.dto.PreUploadVideoDTO;
 import com.bilibili.pojo.dto.UploadVideoDTO;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 
@@ -46,4 +48,11 @@ public class FileController {
     public Result<SysSettingProperties> getSetting() {
         return Result.success(new SysSettingProperties());
     }
+
+
+    @GetMapping("/getResource")
+    public void getResource(HttpServletResponse response, CategoryGetFileSourceNameDTO categoryGetFileSourceNameDTO) {
+        fileService.getImage(response,categoryGetFileSourceNameDTO.getSourceName());
+    }
+
 }
